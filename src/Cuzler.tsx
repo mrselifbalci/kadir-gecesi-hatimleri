@@ -69,7 +69,7 @@ const Cuzler: React.FC = () => {
         );
 
         setCuzlers(sortedData);
-        filterByHatim(13, sortedData);
+        filterByHatim(17, sortedData);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
