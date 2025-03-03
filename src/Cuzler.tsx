@@ -69,7 +69,7 @@ const Cuzler: React.FC = () => {
         );
 
         setCuzlers(sortedData);
-        filterByHatim(29, sortedData);
+        filterByHatim(31, sortedData);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -390,6 +390,88 @@ const Cuzler: React.FC = () => {
         }}
       >
         {[26, 27, 28, 29, 30].map((num) => (
+          <Button
+            key={num}
+            variant={selectedHatim === num ? "contained" : "outlined"}
+            onClick={() => {
+              if (!arePreviousHatimsComplete(num) && !isAdmin) {
+                setDialogMessage(
+                  "Lütfen önceki hatmi tamamlayın, ardından bir sonraki hatime geçebilirsiniz."
+                );
+                setOpenDialog(true);
+              } else {
+                filterByHatim(num);
+              }
+            }}
+            sx={{
+              flex: 1,
+              minWidth: "auto",
+              fontSize: "0.8rem",
+              padding: "6px 8px",
+              backgroundColor:
+                !arePreviousHatimsComplete(num) && !isAdmin ? "#f0f0f0" : "",
+              color: !arePreviousHatimsComplete(num) && !isAdmin ? "#999" : "",
+              cursor:
+                !arePreviousHatimsComplete(num) && !isAdmin
+                  ? "not-allowed"
+                  : "pointer",
+            }}
+          >
+            Hatim {num}
+          </Button>
+        ))}
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          gap: 1,
+          marginBottom: 2,
+          justifyContent: "center",
+          width: "100%",
+        }}
+      >
+        {[31, 32, 33, 34, 35].map((num) => (
+          <Button
+            key={num}
+            variant={selectedHatim === num ? "contained" : "outlined"}
+            onClick={() => {
+              if (!arePreviousHatimsComplete(num) && !isAdmin) {
+                setDialogMessage(
+                  "Lütfen önceki hatmi tamamlayın, ardından bir sonraki hatime geçebilirsiniz."
+                );
+                setOpenDialog(true);
+              } else {
+                filterByHatim(num);
+              }
+            }}
+            sx={{
+              flex: 1,
+              minWidth: "auto",
+              fontSize: "0.8rem",
+              padding: "6px 8px",
+              backgroundColor:
+                !arePreviousHatimsComplete(num) && !isAdmin ? "#f0f0f0" : "",
+              color: !arePreviousHatimsComplete(num) && !isAdmin ? "#999" : "",
+              cursor:
+                !arePreviousHatimsComplete(num) && !isAdmin
+                  ? "not-allowed"
+                  : "pointer",
+            }}
+          >
+            Hatim {num}
+          </Button>
+        ))}
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          gap: 1,
+          marginBottom: 2,
+          justifyContent: "center",
+          width: "100%",
+        }}
+      >
+        {[36, 37, 38, 39, 40].map((num) => (
           <Button
             key={num}
             variant={selectedHatim === num ? "contained" : "outlined"}
