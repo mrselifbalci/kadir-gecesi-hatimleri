@@ -173,7 +173,7 @@ const Cuzler: React.FC = () => {
     <Box sx={{ color: "black", height: "100%", padding: 2 }}>
       {/* Hatim selection buttons */}
 
-      <Box
+      {/* <Box
         sx={{
           display: "flex",
           gap: 1,
@@ -213,9 +213,9 @@ const Cuzler: React.FC = () => {
             Hatim {num}
           </Button>
         ))}
-      </Box>
+      </Box> */}
 
-      <Box
+      {/* <Box
         sx={{
           display: "flex",
           gap: 1,
@@ -255,9 +255,9 @@ const Cuzler: React.FC = () => {
             Hatim {num}
           </Button>
         ))}
-      </Box>
+      </Box> */}
 
-      <Box
+      {/* <Box
         sx={{
           display: "flex",
           gap: 1,
@@ -297,8 +297,8 @@ const Cuzler: React.FC = () => {
             Hatim {num}
           </Button>
         ))}
-      </Box>
-      <Box
+      </Box> */}
+      {/* <Box
         sx={{
           display: "flex",
           gap: 1,
@@ -338,8 +338,8 @@ const Cuzler: React.FC = () => {
             Hatim {num}
           </Button>
         ))}
-      </Box>
-      <Box
+      </Box> */}
+      {/* <Box
         sx={{
           display: "flex",
           gap: 1,
@@ -379,8 +379,8 @@ const Cuzler: React.FC = () => {
             Hatim {num}
           </Button>
         ))}
-      </Box>
-      <Box
+      </Box> */}
+      {/* <Box
         sx={{
           display: "flex",
           gap: 1,
@@ -420,8 +420,8 @@ const Cuzler: React.FC = () => {
             Hatim {num}
           </Button>
         ))}
-      </Box>
-      <Box
+      </Box> */}
+      {/* <Box
         sx={{
           display: "flex",
           gap: 1,
@@ -461,8 +461,8 @@ const Cuzler: React.FC = () => {
             Hatim {num}
           </Button>
         ))}
-      </Box>
-      <Box
+      </Box> */}
+      {/* <Box
         sx={{
           display: "flex",
           gap: 1,
@@ -502,7 +502,7 @@ const Cuzler: React.FC = () => {
             Hatim {num}
           </Button>
         ))}
-      </Box>
+      </Box> */}
       <Box
         sx={{
           display: "flex",
