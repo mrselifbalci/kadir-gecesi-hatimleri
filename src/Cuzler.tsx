@@ -503,7 +503,7 @@ const Cuzler: React.FC = () => {
           </Button>
         ))}
       </Box> */}
-      <Box
+      {/* <Box
         sx={{
           display: "flex",
           gap: 1,
@@ -543,8 +543,8 @@ const Cuzler: React.FC = () => {
             Hatim {num}
           </Button>
         ))}
-      </Box>
-      <Box
+      </Box> */}
+      {/* <Box
         sx={{
           display: "flex",
           gap: 1,
@@ -554,6 +554,47 @@ const Cuzler: React.FC = () => {
         }}
       >
         {[46, 47, 48, 49, 50].map((num) => (
+          <Button
+            key={num}
+            variant={selectedHatim === num ? "contained" : "outlined"}
+            onClick={() => {
+              if (!arePreviousHatimsComplete(num) && !isAdmin) {
+                setDialogMessage(
+                  "Lütfen önceki hatmi tamamlayın, ardından bir sonraki hatime geçebilirsiniz."
+                );
+                setOpenDialog(true);
+              } else {
+                filterByHatim(num);
+              }
+            }}
+            sx={{
+              flex: 1,
+              minWidth: "auto",
+              fontSize: "0.8rem",
+              padding: "6px 8px",
+              backgroundColor:
+                !arePreviousHatimsComplete(num) && !isAdmin ? "#f0f0f0" : "",
+              color: !arePreviousHatimsComplete(num) && !isAdmin ? "#999" : "",
+              cursor:
+                !arePreviousHatimsComplete(num) && !isAdmin
+                  ? "not-allowed"
+                  : "pointer",
+            }}
+          >
+            Hatim {num}
+          </Button>
+        ))}
+      </Box> */}
+      <Box
+        sx={{
+          display: "flex",
+          gap: 1,
+          marginBottom: 2,
+          justifyContent: "center",
+          width: "100%",
+        }}
+      >
+        {[51, 52, 53, 54, 55].map((num) => (
           <Button
             key={num}
             variant={selectedHatim === num ? "contained" : "outlined"}
@@ -594,7 +635,7 @@ const Cuzler: React.FC = () => {
           width: "100%",
         }}
       >
-        {[51, 52, 53, 54, 55].map((num) => (
+        {[56, 57, 58, 59, 60].map((num) => (
           <Button
             key={num}
             variant={selectedHatim === num ? "contained" : "outlined"}
