@@ -62,16 +62,18 @@ const Cuzler: React.FC = () => {
           throw new Error("Failed to fetch data");
         }
         const result = await response.json();
-        console.log(
-          result.response.find((item: any) => item.personName.includes("Elif"))
-        );
+        // console.log(
+        //   result.response.find((item: any) =>
+        //     item.personName.includes("Sümeyra ve ailesi")
+        //   )
+        // );
         // Sort data by cuzNumber in ascending order
         const sortedData = result.response.sort(
           (a: CuzlerType, b: CuzlerType) => a.cuzNumber - b.cuzNumber
         );
 
         setCuzlers(sortedData);
-        filterByHatim(57, sortedData);
+        filterByHatim(58, sortedData);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
