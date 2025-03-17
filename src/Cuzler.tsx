@@ -176,7 +176,7 @@ const Cuzler: React.FC = () => {
     Array.from({ length: end - start + 1 }, (_, i) => start + i);
 
   // Example usage:
-  const hatimNumbers = generateRange(55, 90); // Generates numbers from 10 to 90
+  const hatimNumbers = generateRange(56, 90); // Generates numbers from 10 to 90
 
   const hatimRows = hatimNumbers.reduce((acc, num, index) => {
     if (index % 5 === 0) acc.push([]);
