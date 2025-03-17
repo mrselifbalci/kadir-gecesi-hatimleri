@@ -73,7 +73,7 @@ const Cuzler: React.FC = () => {
         );
 
         setCuzlers(sortedData);
-        filterByHatim(61, sortedData);
+        filterByHatim(62, sortedData);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -172,585 +172,66 @@ const Cuzler: React.FC = () => {
       .slice(0, cuzNumber - 1) // Check only previous cüzs
       .every((cuz) => cuz.personName && cuz.personName.trim() !== "");
   };
+  const generateRange = (start: number, end: number) =>
+    Array.from({ length: end - start + 1 }, (_, i) => start + i);
 
+  // Example usage:
+  const hatimNumbers = generateRange(55, 90); // Generates numbers from 10 to 90
+
+  const hatimRows = hatimNumbers.reduce((acc, num, index) => {
+    if (index % 5 === 0) acc.push([]);
+    acc[acc.length - 1].push(num);
+    return acc;
+  }, [] as number[][]);
   return (
     <Box sx={{ color: "black", height: "100%", padding: 2 }}>
-      {/* Hatim selection buttons */}
-
-      {/* <Box
-        sx={{
-          display: "flex",
-          gap: 1,
-          marginBottom: 2,
-          justifyContent: "center",
-          width: "100%",
-        }}
-      >
-        {[1, 2, 3, 4, 5].map((num) => (
-          <Button
-            key={num}
-            variant={selectedHatim === num ? "contained" : "outlined"}
-            onClick={() => {
-              if (!arePreviousHatimsComplete(num) && !isAdmin) {
-                setDialogMessage(
-                  "Lütfen önceki hatmi tamamlayın, ardından bir sonraki hatime geçebilirsiniz."
-                );
-                setOpenDialog(true);
-              } else {
-                filterByHatim(num);
-              }
-            }}
+      <Box sx={{ color: "black", height: "100%", padding: 2 }}>
+        {hatimRows.map((row, rowIndex) => (
+          <Box
+            key={rowIndex}
             sx={{
-              flex: 1,
-              minWidth: "auto",
-              fontSize: "0.8rem",
-              padding: "6px 8px",
-              backgroundColor:
-                !arePreviousHatimsComplete(num) && !isAdmin ? "#f0f0f0" : "",
-              color: !arePreviousHatimsComplete(num) && !isAdmin ? "#999" : "",
-              cursor:
-                !arePreviousHatimsComplete(num) && !isAdmin
-                  ? "not-allowed"
-                  : "pointer",
+              display: "flex",
+              gap: 1,
+              marginBottom: 2,
+              justifyContent: "center",
+              width: "100%",
             }}
           >
-            Hatim {num}
-          </Button>
-        ))}
-      </Box> */}
-
-      {/* <Box
-        sx={{
-          display: "flex",
-          gap: 1,
-          marginBottom: 2,
-          justifyContent: "center",
-          width: "100%",
-        }}
-      >
-        {[6, 7, 8, 9, 10].map((num) => (
-          <Button
-            key={num}
-            variant={selectedHatim === num ? "contained" : "outlined"}
-            onClick={() => {
-              if (!arePreviousHatimsComplete(num) && !isAdmin) {
-                setDialogMessage(
-                  "Lütfen önceki hatmi tamamlayın, ardından bir sonraki hatime geçebilirsiniz."
-                );
-                setOpenDialog(true);
-              } else {
-                filterByHatim(num);
-              }
-            }}
-            sx={{
-              flex: 1,
-              minWidth: "auto",
-              fontSize: "0.8rem",
-              padding: "6px 8px",
-              backgroundColor:
-                !arePreviousHatimsComplete(num) && !isAdmin ? "#f0f0f0" : "",
-              color: !arePreviousHatimsComplete(num) && !isAdmin ? "#999" : "",
-              cursor:
-                !arePreviousHatimsComplete(num) && !isAdmin
-                  ? "not-allowed"
-                  : "pointer",
-            }}
-          >
-            Hatim {num}
-          </Button>
-        ))}
-      </Box> */}
-
-      {/* <Box
-        sx={{
-          display: "flex",
-          gap: 1,
-          marginBottom: 2,
-          justifyContent: "center",
-          width: "100%",
-        }}
-      >
-        {[11, 12, 13, 14, 15].map((num) => (
-          <Button
-            key={num}
-            variant={selectedHatim === num ? "contained" : "outlined"}
-            onClick={() => {
-              if (!arePreviousHatimsComplete(num) && !isAdmin) {
-                setDialogMessage(
-                  "Lütfen önceki hatmi tamamlayın, ardından bir sonraki hatime geçebilirsiniz."
-                );
-                setOpenDialog(true);
-              } else {
-                filterByHatim(num);
-              }
-            }}
-            sx={{
-              flex: 1,
-              minWidth: "auto",
-              fontSize: "0.8rem",
-              padding: "6px 8px",
-              backgroundColor:
-                !arePreviousHatimsComplete(num) && !isAdmin ? "#f0f0f0" : "",
-              color: !arePreviousHatimsComplete(num) && !isAdmin ? "#999" : "",
-              cursor:
-                !arePreviousHatimsComplete(num) && !isAdmin
-                  ? "not-allowed"
-                  : "pointer",
-            }}
-          >
-            Hatim {num}
-          </Button>
-        ))}
-      </Box> */}
-      {/* <Box
-        sx={{
-          display: "flex",
-          gap: 1,
-          marginBottom: 2,
-          justifyContent: "center",
-          width: "100%",
-        }}
-      >
-        {[16, 17, 18, 19, 20].map((num) => (
-          <Button
-            key={num}
-            variant={selectedHatim === num ? "contained" : "outlined"}
-            onClick={() => {
-              if (!arePreviousHatimsComplete(num) && !isAdmin) {
-                setDialogMessage(
-                  "Lütfen önceki hatmi tamamlayın, ardından bir sonraki hatime geçebilirsiniz."
-                );
-                setOpenDialog(true);
-              } else {
-                filterByHatim(num);
-              }
-            }}
-            sx={{
-              flex: 1,
-              minWidth: "auto",
-              fontSize: "0.8rem",
-              padding: "6px 8px",
-              backgroundColor:
-                !arePreviousHatimsComplete(num) && !isAdmin ? "#f0f0f0" : "",
-              color: !arePreviousHatimsComplete(num) && !isAdmin ? "#999" : "",
-              cursor:
-                !arePreviousHatimsComplete(num) && !isAdmin
-                  ? "not-allowed"
-                  : "pointer",
-            }}
-          >
-            Hatim {num}
-          </Button>
-        ))}
-      </Box> */}
-      {/* <Box
-        sx={{
-          display: "flex",
-          gap: 1,
-          marginBottom: 2,
-          justifyContent: "center",
-          width: "100%",
-        }}
-      >
-        {[21, 22, 23, 24, 25].map((num) => (
-          <Button
-            key={num}
-            variant={selectedHatim === num ? "contained" : "outlined"}
-            onClick={() => {
-              if (!arePreviousHatimsComplete(num) && !isAdmin) {
-                setDialogMessage(
-                  "Lütfen önceki hatmi tamamlayın, ardından bir sonraki hatime geçebilirsiniz."
-                );
-                setOpenDialog(true);
-              } else {
-                filterByHatim(num);
-              }
-            }}
-            sx={{
-              flex: 1,
-              minWidth: "auto",
-              fontSize: "0.8rem",
-              padding: "6px 8px",
-              backgroundColor:
-                !arePreviousHatimsComplete(num) && !isAdmin ? "#f0f0f0" : "",
-              color: !arePreviousHatimsComplete(num) && !isAdmin ? "#999" : "",
-              cursor:
-                !arePreviousHatimsComplete(num) && !isAdmin
-                  ? "not-allowed"
-                  : "pointer",
-            }}
-          >
-            Hatim {num}
-          </Button>
-        ))}
-      </Box> */}
-      {/* <Box
-        sx={{
-          display: "flex",
-          gap: 1,
-          marginBottom: 2,
-          justifyContent: "center",
-          width: "100%",
-        }}
-      >
-        {[26, 27, 28, 29, 30].map((num) => (
-          <Button
-            key={num}
-            variant={selectedHatim === num ? "contained" : "outlined"}
-            onClick={() => {
-              if (!arePreviousHatimsComplete(num) && !isAdmin) {
-                setDialogMessage(
-                  "Lütfen önceki hatmi tamamlayın, ardından bir sonraki hatime geçebilirsiniz."
-                );
-                setOpenDialog(true);
-              } else {
-                filterByHatim(num);
-              }
-            }}
-            sx={{
-              flex: 1,
-              minWidth: "auto",
-              fontSize: "0.8rem",
-              padding: "6px 8px",
-              backgroundColor:
-                !arePreviousHatimsComplete(num) && !isAdmin ? "#f0f0f0" : "",
-              color: !arePreviousHatimsComplete(num) && !isAdmin ? "#999" : "",
-              cursor:
-                !arePreviousHatimsComplete(num) && !isAdmin
-                  ? "not-allowed"
-                  : "pointer",
-            }}
-          >
-            Hatim {num}
-          </Button>
-        ))}
-      </Box> */}
-      {/* <Box
-        sx={{
-          display: "flex",
-          gap: 1,
-          marginBottom: 2,
-          justifyContent: "center",
-          width: "100%",
-        }}
-      >
-        {[31, 32, 33, 34, 35].map((num) => (
-          <Button
-            key={num}
-            variant={selectedHatim === num ? "contained" : "outlined"}
-            onClick={() => {
-              if (!arePreviousHatimsComplete(num) && !isAdmin) {
-                setDialogMessage(
-                  "Lütfen önceki hatmi tamamlayın, ardından bir sonraki hatime geçebilirsiniz."
-                );
-                setOpenDialog(true);
-              } else {
-                filterByHatim(num);
-              }
-            }}
-            sx={{
-              flex: 1,
-              minWidth: "auto",
-              fontSize: "0.8rem",
-              padding: "6px 8px",
-              backgroundColor:
-                !arePreviousHatimsComplete(num) && !isAdmin ? "#f0f0f0" : "",
-              color: !arePreviousHatimsComplete(num) && !isAdmin ? "#999" : "",
-              cursor:
-                !arePreviousHatimsComplete(num) && !isAdmin
-                  ? "not-allowed"
-                  : "pointer",
-            }}
-          >
-            Hatim {num}
-          </Button>
-        ))}
-      </Box> */}
-      {/* <Box
-        sx={{
-          display: "flex",
-          gap: 1,
-          marginBottom: 2,
-          justifyContent: "center",
-          width: "100%",
-        }}
-      >
-        {[36, 37, 38, 39, 40].map((num) => (
-          <Button
-            key={num}
-            variant={selectedHatim === num ? "contained" : "outlined"}
-            onClick={() => {
-              if (!arePreviousHatimsComplete(num) && !isAdmin) {
-                setDialogMessage(
-                  "Lütfen önceki hatmi tamamlayın, ardından bir sonraki hatime geçebilirsiniz."
-                );
-                setOpenDialog(true);
-              } else {
-                filterByHatim(num);
-              }
-            }}
-            sx={{
-              flex: 1,
-              minWidth: "auto",
-              fontSize: "0.8rem",
-              padding: "6px 8px",
-              backgroundColor:
-                !arePreviousHatimsComplete(num) && !isAdmin ? "#f0f0f0" : "",
-              color: !arePreviousHatimsComplete(num) && !isAdmin ? "#999" : "",
-              cursor:
-                !arePreviousHatimsComplete(num) && !isAdmin
-                  ? "not-allowed"
-                  : "pointer",
-            }}
-          >
-            Hatim {num}
-          </Button>
-        ))}
-      </Box> */}
-      {/* <Box
-        sx={{
-          display: "flex",
-          gap: 1,
-          marginBottom: 2,
-          justifyContent: "center",
-          width: "100%",
-        }}
-      >
-        {[41, 42, 43, 44, 45].map((num) => (
-          <Button
-            key={num}
-            variant={selectedHatim === num ? "contained" : "outlined"}
-            onClick={() => {
-              if (!arePreviousHatimsComplete(num) && !isAdmin) {
-                setDialogMessage(
-                  "Lütfen önceki hatmi tamamlayın, ardından bir sonraki hatime geçebilirsiniz."
-                );
-                setOpenDialog(true);
-              } else {
-                filterByHatim(num);
-              }
-            }}
-            sx={{
-              flex: 1,
-              minWidth: "auto",
-              fontSize: "0.8rem",
-              padding: "6px 8px",
-              backgroundColor:
-                !arePreviousHatimsComplete(num) && !isAdmin ? "#f0f0f0" : "",
-              color: !arePreviousHatimsComplete(num) && !isAdmin ? "#999" : "",
-              cursor:
-                !arePreviousHatimsComplete(num) && !isAdmin
-                  ? "not-allowed"
-                  : "pointer",
-            }}
-          >
-            Hatim {num}
-          </Button>
-        ))}
-      </Box> */}
-      <Box
-        sx={{
-          display: "flex",
-          gap: 1,
-          marginBottom: 2,
-          justifyContent: "center",
-          width: "100%",
-        }}
-      >
-        {[46, 47, 48, 49, 50].map((num) => (
-          <Button
-            key={num}
-            variant={selectedHatim === num ? "contained" : "outlined"}
-            onClick={() => {
-              if (!arePreviousHatimsComplete(num) && !isAdmin) {
-                setDialogMessage(
-                  "Lütfen önceki hatmi tamamlayın, ardından bir sonraki hatime geçebilirsiniz."
-                );
-                setOpenDialog(true);
-              } else {
-                filterByHatim(num);
-              }
-            }}
-            sx={{
-              flex: 1,
-              minWidth: "auto",
-              fontSize: "0.8rem",
-              padding: "6px 8px",
-              backgroundColor:
-                !arePreviousHatimsComplete(num) && !isAdmin ? "#f0f0f0" : "",
-              color: !arePreviousHatimsComplete(num) && !isAdmin ? "#999" : "",
-              cursor:
-                !arePreviousHatimsComplete(num) && !isAdmin
-                  ? "not-allowed"
-                  : "pointer",
-            }}
-          >
-            Hatim {num}
-          </Button>
-        ))}
-      </Box>
-      <Box
-        sx={{
-          display: "flex",
-          gap: 1,
-          marginBottom: 2,
-          justifyContent: "center",
-          width: "100%",
-        }}
-      >
-        {[51, 52, 53, 54, 55].map((num) => (
-          <Button
-            key={num}
-            variant={selectedHatim === num ? "contained" : "outlined"}
-            onClick={() => {
-              if (!arePreviousHatimsComplete(num) && !isAdmin) {
-                setDialogMessage(
-                  "Lütfen önceki hatmi tamamlayın, ardından bir sonraki hatime geçebilirsiniz."
-                );
-                setOpenDialog(true);
-              } else {
-                filterByHatim(num);
-              }
-            }}
-            sx={{
-              flex: 1,
-              minWidth: "auto",
-              fontSize: "0.8rem",
-              padding: "6px 8px",
-              backgroundColor:
-                !arePreviousHatimsComplete(num) && !isAdmin ? "#f0f0f0" : "",
-              color: !arePreviousHatimsComplete(num) && !isAdmin ? "#999" : "",
-              cursor:
-                !arePreviousHatimsComplete(num) && !isAdmin
-                  ? "not-allowed"
-                  : "pointer",
-            }}
-          >
-            Hatim {num}
-          </Button>
-        ))}
-      </Box>
-      <Box
-        sx={{
-          display: "flex",
-          gap: 1,
-          marginBottom: 2,
-          justifyContent: "center",
-          width: "100%",
-        }}
-      >
-        {[56, 57, 58, 59, 60].map((num) => (
-          <Button
-            key={num}
-            variant={selectedHatim === num ? "contained" : "outlined"}
-            onClick={() => {
-              if (!arePreviousHatimsComplete(num) && !isAdmin) {
-                setDialogMessage(
-                  "Lütfen önceki hatmi tamamlayın, ardından bir sonraki hatime geçebilirsiniz."
-                );
-                setOpenDialog(true);
-              } else {
-                filterByHatim(num);
-              }
-            }}
-            sx={{
-              flex: 1,
-              minWidth: "auto",
-              fontSize: "0.8rem",
-              padding: "6px 8px",
-              backgroundColor:
-                !arePreviousHatimsComplete(num) && !isAdmin ? "#f0f0f0" : "",
-              color: !arePreviousHatimsComplete(num) && !isAdmin ? "#999" : "",
-              cursor:
-                !arePreviousHatimsComplete(num) && !isAdmin
-                  ? "not-allowed"
-                  : "pointer",
-            }}
-          >
-            Hatim {num}
-          </Button>
-        ))}
-      </Box>
-      <Box
-        sx={{
-          display: "flex",
-          gap: 1,
-          marginBottom: 2,
-          justifyContent: "center",
-          width: "100%",
-        }}
-      >
-        {[61, 62, 63, 64, 65].map((num) => (
-          <Button
-            key={num}
-            variant={selectedHatim === num ? "contained" : "outlined"}
-            onClick={() => {
-              if (!arePreviousHatimsComplete(num) && !isAdmin) {
-                setDialogMessage(
-                  "Lütfen önceki hatmi tamamlayın, ardından bir sonraki hatime geçebilirsiniz."
-                );
-                setOpenDialog(true);
-              } else {
-                filterByHatim(num);
-              }
-            }}
-            sx={{
-              flex: 1,
-              minWidth: "auto",
-              fontSize: "0.8rem",
-              padding: "6px 8px",
-              backgroundColor:
-                !arePreviousHatimsComplete(num) && !isAdmin ? "#f0f0f0" : "",
-              color: !arePreviousHatimsComplete(num) && !isAdmin ? "#999" : "",
-              cursor:
-                !arePreviousHatimsComplete(num) && !isAdmin
-                  ? "not-allowed"
-                  : "pointer",
-            }}
-          >
-            Hatim {num}
-          </Button>
-        ))}
-      </Box>
-      <Box
-        sx={{
-          display: "flex",
-          gap: 1,
-          marginBottom: 2,
-          justifyContent: "center",
-          width: "100%",
-        }}
-      >
-        {[66, 67, 68, 69, 70].map((num) => (
-          <Button
-            key={num}
-            variant={selectedHatim === num ? "contained" : "outlined"}
-            onClick={() => {
-              if (!arePreviousHatimsComplete(num) && !isAdmin) {
-                setDialogMessage(
-                  "Lütfen önceki hatmi tamamlayın, ardından bir sonraki hatime geçebilirsiniz."
-                );
-                setOpenDialog(true);
-              } else {
-                filterByHatim(num);
-              }
-            }}
-            sx={{
-              flex: 1,
-              minWidth: "auto",
-              fontSize: "0.8rem",
-              padding: "6px 8px",
-              backgroundColor:
-                !arePreviousHatimsComplete(num) && !isAdmin ? "#f0f0f0" : "",
-              color: !arePreviousHatimsComplete(num) && !isAdmin ? "#999" : "",
-              cursor:
-                !arePreviousHatimsComplete(num) && !isAdmin
-                  ? "not-allowed"
-                  : "pointer",
-            }}
-          >
-            Hatim {num}
-          </Button>
+            {row.map((num) => (
+              <Button
+                key={num}
+                variant={selectedHatim === num ? "contained" : "outlined"}
+                onClick={() => {
+                  if (!arePreviousHatimsComplete(num) && !isAdmin) {
+                    setDialogMessage(
+                      "Lütfen önceki hatmi tamamlayın, ardından bir sonraki hatime geçebilirsiniz."
+                    );
+                    setOpenDialog(true);
+                  } else {
+                    filterByHatim(num);
+                  }
+                }}
+                sx={{
+                  flex: 1,
+                  minWidth: "auto",
+                  fontSize: "0.8rem",
+                  padding: "6px 8px",
+                  backgroundColor:
+                    !arePreviousHatimsComplete(num) && !isAdmin
+                      ? "#f0f0f0"
+                      : "",
+                  color:
+                    !arePreviousHatimsComplete(num) && !isAdmin ? "#999" : "",
+                  cursor:
+                    !arePreviousHatimsComplete(num) && !isAdmin
+                      ? "not-allowed"
+                      : "pointer",
+                }}
+              >
+                Hatim {num}
+              </Button>
+            ))}
+          </Box>
         ))}
       </Box>
       {/* List of Cuzlers */}
