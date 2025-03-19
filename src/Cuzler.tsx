@@ -202,14 +202,14 @@ const Cuzler: React.FC = () => {
                 key={num}
                 variant={selectedHatim === num ? "contained" : "outlined"}
                 onClick={() => {
-                  // if (!arePreviousHatimsComplete(num) && !isAdmin) {
-                  //   setDialogMessage(
-                  //     "Lütfen önceki hatmi tamamlayın, ardından bir sonraki hatime geçebilirsiniz."
-                  //   );
-                  //   setOpenDialog(true);
-                  // } else {
-                  filterByHatim(num);
-                  // }
+                  if (!arePreviousHatimsComplete(num) && !isAdmin) {
+                    setDialogMessage(
+                      "Lütfen önceki hatmi tamamlayın, ardından bir sonraki hatime geçebilirsiniz."
+                    );
+                    setOpenDialog(true);
+                  } else {
+                    filterByHatim(num);
+                  }
                 }}
                 sx={{
                   flex: 1,
