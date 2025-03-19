@@ -62,19 +62,13 @@ const Cuzler: React.FC = () => {
           throw new Error("Failed to fetch data");
         }
         const result = await response.json();
-        // console.log(
-        //   result.response.filter((item: any) =>
-        //     item.personName.toLowerCase().includes("yağmur")
-        //   )
-        // );
-        // Sort data by cuzNumber in ascending order
         const sortedData = result.response.sort(
           (a: CuzlerType, b: CuzlerType) => a.cuzNumber - b.cuzNumber
         );
 
         setCuzlers(sortedData);
         filterByHatim(73, sortedData);
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error fetching data:", error);
       }
     };
@@ -109,14 +103,20 @@ const Cuzler: React.FC = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ personName: newName }),
+          body: JSON.stringify({ personName: newName, isAdmin: isAdmin }),
         }
       );
-
+      const data = await response.json();
+      if (data.message === "exists") {
+        // Handle the "exists" case (e.g., show a message or prevent further update)
+        alert(
+          "Bu cuz baskasi tarafindan alindi. Sayfayi yenileyerek tekrar deneyin."
+        );
+        return;
+      }
       if (!response.ok) {
         throw new Error("Failed to update personName");
       }
-
       // 1️⃣ **Update both states to reflect the new (even blank) name immediately**
       setCuzlers((prev) =>
         prev.map((item) =>
@@ -138,8 +138,8 @@ const Cuzler: React.FC = () => {
         setEditedFields((prev) => ({ ...prev, [cuzNumber]: false })); // Disable input after update
         setNameInputs((prev) => ({ ...prev, [cuzNumber]: "" })); // Reset input field
       }, 2000);
-    } catch (error) {
-      console.error("Error updating personName:", error);
+    } catch (error: any) {
+      console.log(error);
     }
   };
 
@@ -176,7 +176,7 @@ const Cuzler: React.FC = () => {
     Array.from({ length: end - start + 1 }, (_, i) => start + i);
 
   // Example usage:
-  const hatimNumbers = generateRange(1, 90); // Generates numbers from 10 to 90
+  const hatimNumbers = generateRange(71, 90); // Generates numbers from 10 to 90
 
   const hatimRows = hatimNumbers.reduce((acc, num, index) => {
     if (index % 5 === 0) acc.push([]);
@@ -202,14 +202,14 @@ const Cuzler: React.FC = () => {
                 key={num}
                 variant={selectedHatim === num ? "contained" : "outlined"}
                 onClick={() => {
-                  if (!arePreviousHatimsComplete(num) && !isAdmin) {
-                    setDialogMessage(
-                      "Lütfen önceki hatmi tamamlayın, ardından bir sonraki hatime geçebilirsiniz."
-                    );
-                    setOpenDialog(true);
-                  } else {
-                    filterByHatim(num);
-                  }
+                  // if (!arePreviousHatimsComplete(num) && !isAdmin) {
+                  //   setDialogMessage(
+                  //     "Lütfen önceki hatmi tamamlayın, ardından bir sonraki hatime geçebilirsiniz."
+                  //   );
+                  //   setOpenDialog(true);
+                  // } else {
+                  filterByHatim(num);
+                  // }
                 }}
                 sx={{
                   flex: 1,
