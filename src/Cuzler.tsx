@@ -187,9 +187,9 @@ const Cuzler: React.FC = () => {
   }, [] as number[][]);
 
   // const deleteData = async () => {
-  //   const hatimNumbers = [];
+  //   const hatimNumbersDelete = [93];
   //   try {
-  //     const deleteRequests = hatimNumbers.map((hatimNumber) =>
+  //     const deleteRequests = hatimNumbersDelete.map((hatimNumber) =>
   //       fetch(
   //         `https://ihya-2025-be0afcce5189.herokuapp.com/cuzlers/hatim/${hatimNumber}`,
   //         {
