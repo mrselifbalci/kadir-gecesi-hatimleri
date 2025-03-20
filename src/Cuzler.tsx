@@ -144,11 +144,13 @@ const Cuzler: React.FC = () => {
   };
 
   const handleDownloadExcel = () => {
-    const formattedData = cuzlers.map((item) => ({
-      "Hatim Numarasi": item.hatimNumber,
-      "Cüz numarası": item.cuzNumber,
-      İsim: item.personName || "",
-    }));
+    const formattedData = cuzlers
+      .sort((a, b) => a.hatimNumber - b.hatimNumber) // Sorting by hatimNumber in ascending order
+      .map((item) => ({
+        "Hatim Numarasi": item.hatimNumber,
+        "Cüz numarası": item.cuzNumber,
+        İsim: item.personName || "",
+      }));
 
     const worksheet = XLSX.utils.json_to_sheet(formattedData);
     const workbook = XLSX.utils.book_new();
@@ -176,15 +178,39 @@ const Cuzler: React.FC = () => {
     Array.from({ length: end - start + 1 }, (_, i) => start + i);
 
   // Example usage:
-  const hatimNumbers = generateRange(1, 90); // Generates numbers from 10 to 90
+  const hatimNumbers = generateRange(1, 100); // Generates numbers from 10 to 90
 
   const hatimRows = hatimNumbers.reduce((acc, num, index) => {
     if (index % 5 === 0) acc.push([]);
     acc[acc.length - 1].push(num);
     return acc;
   }, [] as number[][]);
+
+  // const deleteData = async () => {
+  //   const hatimNumbers = [];
+  //   try {
+  //     const deleteRequests = hatimNumbers.map((hatimNumber) =>
+  //       fetch(
+  //         `https://ihya-2025-be0afcce5189.herokuapp.com/cuzlers/hatim/${hatimNumber}`,
+  //         {
+  //           method: "DELETE",
+  //           headers: {
+  //             "Content-Type": "application/json",
+  //           },
+  //         }
+  //       )
+  //     );
+
+  //     await Promise.all(deleteRequests);
+  //     console.log("All delete requests completed.");
+  //   } catch (error) {
+  //     console.error("Error deleting data:", error);
+  //   }
+  // };
+
   return (
     <Box sx={{ color: "black", height: "100%", padding: 2 }}>
+      {/* <button onClick={deleteData}>delete</button> */}
       <Box sx={{ color: "black", height: "100%", padding: 2 }}>
         {hatimRows.map((row, rowIndex) => (
           <Box
