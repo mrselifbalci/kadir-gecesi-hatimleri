@@ -67,7 +67,7 @@ const Cuzler: React.FC = () => {
         );
 
         setCuzlers(sortedData);
-        filterByHatim(91, sortedData);
+        filterByHatim(117, sortedData);
       } catch (error: any) {
         console.error("Error fetching data:", error);
       }
@@ -178,7 +178,7 @@ const Cuzler: React.FC = () => {
     Array.from({ length: end - start + 1 }, (_, i) => start + i);
 
   // Example usage:
-  const hatimNumbers = generateRange(1, 100); // Generates numbers from 10 to 90
+  const hatimNumbers = generateRange(1, 120); // Generates numbers from 10 to 90
 
   const hatimRows = hatimNumbers.reduce((acc, num, index) => {
     if (index % 5 === 0) acc.push([]);
