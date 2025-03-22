@@ -9,6 +9,7 @@ import {
 import { CuzlerType } from "./Cuzler";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import * as XLSX from "xlsx";
+import { useState } from "react";
 
 interface AdminProps {
   isAdmin: boolean;
@@ -30,6 +31,7 @@ const Admin = ({
   setShowPassword,
   handlePasswordSubmit,
 }: AdminProps) => {
+  const [newHatimsToAdd, setNewHatimsToAdd] = useState<number | undefined>();
   const handleDownloadExcel = () => {
     const formattedData = cuzlers
       .sort((a, b) => a.hatimNumber - b.hatimNumber) // Sorting by hatimNumber in ascending order
@@ -45,11 +47,61 @@ const Admin = ({
 
     XLSX.writeFile(workbook, "cuzlers.xlsx");
   };
+  const addNewHatims = async () => {
+    const hatimNumbers = cuzlers.map((c) => c.hatimNumber);
+    const uniqueHatimNumbers = [...new Set(hatimNumbers)];
+    const lastHatim = Math.max(...uniqueHatimNumbers);
+    if (newHatimsToAdd && newHatimsToAdd > 0) {
+      const newHatimNumbers = Array.from(
+        { length: newHatimsToAdd },
+        (_, i) => lastHatim + i + 1
+      );
+
+      try {
+        const response = await fetch(
+          `https://ihya-2025-be0afcce5189.herokuapp.com/cuzlersdata`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ hatimNumbers: newHatimNumbers }),
+          }
+        );
+        const data = await response.json();
+        console.log(data);
+      } catch (error: any) {
+        console.log(error);
+      }
+    }
+  };
   return (
-    <Box>
+    <Box sx={{ background: "white", height: "100vh", p: 3 }}>
       {isAdmin ? (
         <Box>
-          <Box></Box>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <TextField
+              size="small"
+              type={"number"}
+              placeholder="Hatim sayisi"
+              value={newHatimsToAdd === undefined ? "" : newHatimsToAdd}
+              onChange={(e) =>
+                setNewHatimsToAdd(
+                  e.target.value === "" ? undefined : Number(e.target.value)
+                )
+              }
+            />
+            <Button
+              variant="contained"
+              size="small"
+              color="primary"
+              onClick={addNewHatims}
+              sx={{ ml: 1 }}
+            >
+              Ekle
+            </Button>
+            <Box></Box>
+          </Box>
           <Button
             variant="contained"
             color="primary"

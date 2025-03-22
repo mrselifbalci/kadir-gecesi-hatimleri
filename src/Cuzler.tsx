@@ -33,6 +33,10 @@ interface CuzlerTypeProps {
   showPassword: boolean;
   setShowPassword: React.Dispatch<React.SetStateAction<boolean>>;
   handlePasswordSubmit: () => void;
+  filteredCuzlers: CuzlerType[];
+  setFilteredCuzlers: React.Dispatch<React.SetStateAction<CuzlerType[]>>;
+  filterByHatim: (hatimNumber: number, data?: CuzlerType[]) => void;
+  selectedHatim: number;
 }
 const Cuzler = ({
   currentHatim,
@@ -45,9 +49,11 @@ const Cuzler = ({
   showPassword,
   setShowPassword,
   handlePasswordSubmit,
+  filteredCuzlers,
+  setFilteredCuzlers,
+  filterByHatim,
+  selectedHatim,
 }: CuzlerTypeProps) => {
-  const [filteredCuzlers, setFilteredCuzlers] = useState<CuzlerType[]>([]);
-  const [selectedHatim, setSelectedHatim] = useState<number>(1);
   const [nameInputs, setNameInputs] = useState<Record<number, string>>({});
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogMessage, setDialogMessage] = useState(
@@ -67,39 +73,6 @@ const Cuzler = ({
       if (!isHatimComplete(i)) return false;
     }
     return true;
-  };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          `https://ihya-2025-be0afcce5189.herokuapp.com/cuzlers`
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch data");
-        }
-        const result = await response.json();
-        const sortedData = result.response.sort(
-          (a: CuzlerType, b: CuzlerType) => a.cuzNumber - b.cuzNumber
-        );
-
-        setCuzlers(sortedData);
-        filterByHatim(currentHatim, sortedData);
-      } catch (error: any) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const filterByHatim = (hatimNumber: number, data: CuzlerType[] = cuzlers) => {
-    const filtered = data
-      .filter((item) => item.hatimNumber === hatimNumber)
-      .sort((a, b) => a.cuzNumber - b.cuzNumber);
-
-    setFilteredCuzlers(filtered);
-    setSelectedHatim(hatimNumber);
   };
 
   const handleInputChange = (cuzNumber: number, value: string) => {
@@ -171,8 +144,11 @@ const Cuzler = ({
   const generateRange = (start: number, end: number) =>
     Array.from({ length: end - start + 1 }, (_, i) => start + i);
 
+  const allHatimNumbers = cuzlers.map((c) => c.hatimNumber);
+  const uniqueHatimNumbers = [...new Set(allHatimNumbers)];
+  const lastHatim = Math.max(...uniqueHatimNumbers);
   // Example usage:
-  const hatimNumbers = generateRange(1, 135); // Generates numbers from 10 to 90
+  const hatimNumbers = generateRange(1, lastHatim); // Generates numbers from 10 to 90
 
   const hatimRows = hatimNumbers.reduce((acc, num, index) => {
     if (index % 5 === 0) acc.push([]);
