@@ -29,7 +29,7 @@ const Cuzler: React.FC = () => {
   const [selectedHatim, setSelectedHatim] = useState<number>(1);
   const [nameInputs, setNameInputs] = useState<Record<number, string>>({});
   const [adminPassword, setAdminPassword] = useState<string>("");
-  const [isAdmin, setIsAdmin] = useState<boolean>(true);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState(false);
 
   const [openDialog, setOpenDialog] = useState(false);
