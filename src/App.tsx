@@ -64,7 +64,6 @@ const App: React.FC = () => {
           element={
             <>
               <Cuzler
-                currentHatim={currentHatim}
                 setCurrentHatim={setCurrentHatim}
                 isAdmin={isAdmin}
                 cuzlers={cuzlers}
