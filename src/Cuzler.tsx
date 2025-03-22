@@ -29,7 +29,7 @@ const Cuzler: React.FC = () => {
   const [selectedHatim, setSelectedHatim] = useState<number>(1);
   const [nameInputs, setNameInputs] = useState<Record<number, string>>({});
   const [adminPassword, setAdminPassword] = useState<string>("");
-  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [isAdmin, setIsAdmin] = useState<boolean>(true);
   const [showPassword, setShowPassword] = useState(false);
 
   const [openDialog, setOpenDialog] = useState(false);
@@ -178,7 +178,7 @@ const Cuzler: React.FC = () => {
     Array.from({ length: end - start + 1 }, (_, i) => start + i);
 
   // Example usage:
-  const hatimNumbers = generateRange(1, 120); // Generates numbers from 10 to 90
+  const hatimNumbers = generateRange(1, 135); // Generates numbers from 10 to 90
 
   const hatimRows = hatimNumbers.reduce((acc, num, index) => {
     if (index % 5 === 0) acc.push([]);
@@ -187,7 +187,7 @@ const Cuzler: React.FC = () => {
   }, [] as number[][]);
 
   // const deleteData = async () => {
-  //   const hatimNumbersDelete = [93];
+  //   const hatimNumbersDelete = [126];
   //   try {
   //     const deleteRequests = hatimNumbersDelete.map((hatimNumber) =>
   //       fetch(
