@@ -7,7 +7,6 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import * as XLSX from "xlsx";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
   Dialog,
@@ -15,23 +14,41 @@ import {
   DialogContent,
   DialogTitle,
 } from "@mui/material";
+import { Link } from "react-router-dom";
 
-interface CuzlerType {
+export interface CuzlerType {
   _id: string;
   hatimNumber: number;
   cuzNumber: number;
   personName: string;
 }
-
-const Cuzler: React.FC = () => {
-  const [cuzlers, setCuzlers] = useState<CuzlerType[]>([]);
+interface CuzlerTypeProps {
+  currentHatim: number;
+  setCurrentHatim: React.Dispatch<React.SetStateAction<number>>;
+  isAdmin: boolean;
+  cuzlers: CuzlerType[];
+  setCuzlers: React.Dispatch<React.SetStateAction<CuzlerType[]>>;
+  adminPassword: string;
+  setAdminPassword: React.Dispatch<React.SetStateAction<string>>;
+  showPassword: boolean;
+  setShowPassword: React.Dispatch<React.SetStateAction<boolean>>;
+  handlePasswordSubmit: () => void;
+}
+const Cuzler = ({
+  currentHatim,
+  setCurrentHatim,
+  isAdmin,
+  cuzlers,
+  setCuzlers,
+  adminPassword,
+  setAdminPassword,
+  showPassword,
+  setShowPassword,
+  handlePasswordSubmit,
+}: CuzlerTypeProps) => {
   const [filteredCuzlers, setFilteredCuzlers] = useState<CuzlerType[]>([]);
   const [selectedHatim, setSelectedHatim] = useState<number>(1);
   const [nameInputs, setNameInputs] = useState<Record<number, string>>({});
-  const [adminPassword, setAdminPassword] = useState<string>("");
-  const [isAdmin, setIsAdmin] = useState<boolean>(false);
-  const [showPassword, setShowPassword] = useState(false);
-
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogMessage, setDialogMessage] = useState(
     "Lütfen önceki cüzü tamamlayın, ardından bir sonraki cüze geçebilirsiniz."
@@ -67,7 +84,7 @@ const Cuzler: React.FC = () => {
         );
 
         setCuzlers(sortedData);
-        filterByHatim(117, sortedData);
+        filterByHatim(currentHatim, sortedData);
       } catch (error: any) {
         console.error("Error fetching data:", error);
       }
@@ -143,29 +160,6 @@ const Cuzler: React.FC = () => {
     }
   };
 
-  const handleDownloadExcel = () => {
-    const formattedData = cuzlers
-      .sort((a, b) => a.hatimNumber - b.hatimNumber) // Sorting by hatimNumber in ascending order
-      .map((item) => ({
-        "Hatim Numarasi": item.hatimNumber,
-        "Cüz numarası": item.cuzNumber,
-        İsim: item.personName || "",
-      }));
-
-    const worksheet = XLSX.utils.json_to_sheet(formattedData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Cuzlers");
-
-    XLSX.writeFile(workbook, "cuzlers.xlsx");
-  };
-
-  const handlePasswordSubmit = () => {
-    if (adminPassword === "LONDRA") {
-      setIsAdmin(true);
-    } else {
-      alert("Yanlis sifre");
-    }
-  };
   const isPreviousCuzsFilled = (hatimNumber: number, cuzNumber: number) => {
     const hatimCuzlers = cuzlers.filter(
       (cuz) => cuz.hatimNumber === hatimNumber
@@ -235,6 +229,7 @@ const Cuzler: React.FC = () => {
                     setOpenDialog(true);
                   } else {
                     filterByHatim(num);
+                    setCurrentHatim(num);
                   }
                 }}
                 sx={{
@@ -262,6 +257,7 @@ const Cuzler: React.FC = () => {
       </Box>
       {/* List of Cuzlers */}
       <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+        {/* <Box>hi{num}</Box> */}
         {filteredCuzlers.map((item) => (
           <Box
             key={item._id}
@@ -414,15 +410,9 @@ const Cuzler: React.FC = () => {
         </Box>
       )}
 
-      {/* Download Excel Button (Visible only for admin) */}
       {isAdmin && (
-        <Button
-          variant="contained"
-          color="primary"
-          sx={{ marginTop: 2 }}
-          onClick={handleDownloadExcel}
-        >
-          Download Excel
+        <Button component={Link} to="/admin">
+          Admin Paneli
         </Button>
       )}
     </Box>
