@@ -156,31 +156,31 @@ const Cuzler = ({
     return acc;
   }, [] as number[][]);
 
-  // const deleteData = async () => {
-  //   const hatimNumbersDelete = [126];
-  //   try {
-  //     const deleteRequests = hatimNumbersDelete.map((hatimNumber) =>
-  //       fetch(
-  //         `https://ihya-2025-be0afcce5189.herokuapp.com/cuzlers/hatim/${hatimNumber}`,
-  //         {
-  //           method: "DELETE",
-  //           headers: {
-  //             "Content-Type": "application/json",
-  //           },
-  //         }
-  //       )
-  //     );
+  const deleteData = async () => {
+    const hatimNumbersDelete = [138];
+    try {
+      const deleteRequests = hatimNumbersDelete.map((hatimNumber) =>
+        fetch(
+          `https://ihya-2025-be0afcce5189.herokuapp.com/cuzlers/hatim/${hatimNumber}`,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        )
+      );
 
-  //     await Promise.all(deleteRequests);
-  //     console.log("All delete requests completed.");
-  //   } catch (error) {
-  //     console.error("Error deleting data:", error);
-  //   }
-  // };
+      await Promise.all(deleteRequests);
+      console.log("All delete requests completed.");
+    } catch (error) {
+      console.error("Error deleting data:", error);
+    }
+  };
 
   return (
     <Box sx={{ color: "black", height: "100%", padding: 2 }}>
-      {/* <button onClick={deleteData}>delete</button> */}
+      <button onClick={deleteData}>delete</button>
       <Box sx={{ color: "black", height: "100%", padding: 2 }}>
         {hatimRows.map((row, rowIndex) => (
           <Box

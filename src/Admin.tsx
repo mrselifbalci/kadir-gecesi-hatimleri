@@ -32,6 +32,10 @@ const Admin = ({
   handlePasswordSubmit,
 }: AdminProps) => {
   const [newHatimsToAdd, setNewHatimsToAdd] = useState<number | undefined>();
+  const [fullHatimNo, setFullHatimNo] = useState<number | undefined>();
+  const [fullHatimName, setFullHatimName] = useState<string | undefined>();
+  const [eklendiConfirm, setEklendiConfirm] = useState(false);
+  const [eklendiConfirm2, setEklendiConfirm2] = useState(false);
   const handleDownloadExcel = () => {
     const formattedData = cuzlers
       .sort((a, b) => a.hatimNumber - b.hatimNumber) // Sorting by hatimNumber in ascending order
@@ -47,10 +51,10 @@ const Admin = ({
 
     XLSX.writeFile(workbook, "cuzlers.xlsx");
   };
+  const hatimNumbers = cuzlers.map((c) => c.hatimNumber);
+  const uniqueHatimNumbers = [...new Set(hatimNumbers)];
+  const lastHatim = Math.max(...uniqueHatimNumbers);
   const addNewHatims = async () => {
-    const hatimNumbers = cuzlers.map((c) => c.hatimNumber);
-    const uniqueHatimNumbers = [...new Set(hatimNumbers)];
-    const lastHatim = Math.max(...uniqueHatimNumbers);
     if (newHatimsToAdd && newHatimsToAdd > 0) {
       const newHatimNumbers = Array.from(
         { length: newHatimsToAdd },
@@ -68,10 +72,77 @@ const Admin = ({
             body: JSON.stringify({ hatimNumbers: newHatimNumbers }),
           }
         );
-        const data = await response.json();
-        console.log(data);
+        console.log(response);
+        setEklendiConfirm(true);
+        setNewHatimsToAdd(undefined);
+        setTimeout(() => {
+          setEklendiConfirm(false);
+        }, 400);
       } catch (error: any) {
         console.log(error);
+      }
+    }
+  };
+  const deleteData = async (hatimNumbersToDelete: number[]) => {
+    try {
+      const deleteRequests = hatimNumbersToDelete.map((hatimNumber) =>
+        fetch(
+          `https://ihya-2025-be0afcce5189.herokuapp.com/cuzlers/hatim/${hatimNumber}`,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        )
+      );
+
+      await Promise.all(deleteRequests);
+      console.log("All delete requests completed.");
+    } catch (error) {
+      console.error("Error deleting data:", error);
+    }
+  };
+  const addFullHatim = async () => {
+    const filteredCuzler = cuzlers.filter(
+      (item) => item.hatimNumber === fullHatimNo
+    );
+    if (fullHatimNo && fullHatimNo > lastHatim) {
+      alert("Boyle bir hatim bulunmuyor. Once hatim eklemeniz gerekiyor.");
+      return;
+    }
+    if (filteredCuzler.some((item) => item.personName)) {
+      alert("Bu hatimde alinmis cuzler var. Full hatim ekleyemezsiniz.");
+      return;
+    } else {
+      if (fullHatimNo) {
+        await deleteData([fullHatimNo]);
+
+        try {
+          const response = await fetch(
+            `https://ihya-2025-be0afcce5189.herokuapp.com/cuzlersdatawithname`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                hatimNumbers: [fullHatimNo],
+                personName: fullHatimName,
+              }),
+            }
+          );
+          const data = await response.json();
+          console.log(data);
+          setEklendiConfirm2(true);
+          setFullHatimNo(undefined);
+          setFullHatimName(undefined);
+          setTimeout(() => {
+            setEklendiConfirm2(false);
+          }, 500);
+        } catch (error: any) {
+          console.log(error);
+        }
       }
     }
   };
@@ -79,37 +150,102 @@ const Admin = ({
     <Box sx={{ background: "white", height: "100vh", p: 3 }}>
       {isAdmin ? (
         <Box>
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <TextField
-              size="small"
-              type={"number"}
-              placeholder="Hatim sayisi"
-              value={newHatimsToAdd === undefined ? "" : newHatimsToAdd}
-              onChange={(e) =>
-                setNewHatimsToAdd(
-                  e.target.value === "" ? undefined : Number(e.target.value)
-                )
-              }
-            />
+          <Box
+            sx={{ border: "solid 2px grey", borderRadius: "8px", p: 3, mb: 3 }}
+          >
+            <Typography variant="h5" sx={{ color: "black", mb: 1 }}>
+              Eklemek istediginiz yeni hatim sayisini yazip 'Ekle' tusuna
+              basiniz.
+            </Typography>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <TextField
+                size="small"
+                type={"number"}
+                placeholder="Hatim sayisi"
+                value={newHatimsToAdd === undefined ? "" : newHatimsToAdd}
+                onChange={(e) =>
+                  setNewHatimsToAdd(
+                    e.target.value === "" ? undefined : Number(e.target.value)
+                  )
+                }
+              />
+              <Button
+                variant="contained"
+                size="small"
+                color="primary"
+                onClick={addNewHatims}
+                sx={{ ml: 1 }}
+              >
+                Ekle
+              </Button>
+              {eklendiConfirm && (
+                <Typography variant="body1" sx={{ color: "red", ml: 2 }}>
+                  Eklendi
+                </Typography>
+              )}
+            </Box>
+          </Box>
+          <Box sx={{ border: "solid 2px grey", borderRadius: "8px", p: 3 }}>
+            <Typography variant="h5" sx={{ color: "black", mb: 1 }}>
+              Full hatim olarak eklemek istediginiz hatim numarasini ve okuyacak
+              ismi yazip 'Ekle' butonuna tiklayiniz.
+            </Typography>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              <TextField
+                size="small"
+                type={"number"}
+                placeholder="Hatim numarasi"
+                value={fullHatimNo === undefined ? "" : fullHatimNo}
+                onChange={(e) =>
+                  setFullHatimNo(
+                    e.target.value === "" ? undefined : Number(e.target.value)
+                  )
+                }
+                sx={{ mb: 2 }}
+              />
+              <TextField
+                multiline
+                minRows={4}
+                size="small"
+                type={"text"}
+                placeholder="Okuyacak isim"
+                value={fullHatimName === undefined ? "" : fullHatimName}
+                onChange={(e) => setFullHatimName(e.target.value)}
+                sx={{ mb: 2 }}
+              />
+              <Button
+                variant="contained"
+                size="small"
+                color="primary"
+                onClick={addFullHatim}
+                sx={{ ml: 1 }}
+              >
+                Ekle
+              </Button>
+              {eklendiConfirm2 && (
+                <Typography variant="body1" sx={{ color: "red", ml: 2 }}>
+                  Eklendi
+                </Typography>
+              )}
+            </Box>
+          </Box>
+          <Box
+            sx={{ border: "solid 2px grey", borderRadius: "8px", p: 3, mt: 3 }}
+          >
             <Button
               variant="contained"
-              size="small"
               color="primary"
-              onClick={addNewHatims}
-              sx={{ ml: 1 }}
+              sx={{ marginTop: 2 }}
+              onClick={handleDownloadExcel}
             >
-              Ekle
+              Download Excel
             </Button>
-            <Box></Box>
           </Box>
-          <Button
-            variant="contained"
-            color="primary"
-            sx={{ marginTop: 2 }}
-            onClick={handleDownloadExcel}
-          >
-            Download Excel
-          </Button>
         </Box>
       ) : (
         <Box
