@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Admin from "./Admin";
 
 const App: React.FC = () => {
-  const [currentHatim, setCurrentHatim] = useState(133);
+  const [currentHatim, setCurrentHatim] = useState(260);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [cuzlers, setCuzlers] = useState<CuzlerType[]>([]);
   const [adminPassword, setAdminPassword] = useState<string>("");
