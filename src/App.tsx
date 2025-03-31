@@ -40,7 +40,7 @@ const App: React.FC = () => {
 
         setCuzlers(sortedData);
         filterByHatim(currentHatim, sortedData);
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error("Error fetching data:", error);
       }
     };
@@ -77,6 +77,7 @@ const App: React.FC = () => {
                 setFilteredCuzlers={setFilteredCuzlers}
                 filterByHatim={filterByHatim}
                 selectedHatim={selectedHatim}
+                setSelectedHatim={setSelectedHatim}
               />
             </>
           }

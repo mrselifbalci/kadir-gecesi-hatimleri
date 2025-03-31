@@ -5,9 +5,12 @@ import {
   InputAdornment,
   TextField,
   Typography,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from "@mui/material";
-import React, { useState } from "react";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
+import React, { useState, useMemo, useCallback, useRef } from "react";
+import { Visibility, VisibilityOff, ExpandMore } from "@mui/icons-material";
 import {
   Dialog,
   DialogActions,
@@ -15,6 +18,7 @@ import {
   DialogTitle,
 } from "@mui/material";
 import { Link } from "react-router-dom";
+import debounce from "lodash/debounce";
 
 export interface CuzlerType {
   _id: string;
@@ -22,7 +26,8 @@ export interface CuzlerType {
   cuzNumber: number;
   personName: string;
 }
-interface CuzlerTypeProps {
+
+interface CuzlersTypeProps {
   setCurrentHatim: React.Dispatch<React.SetStateAction<number>>;
   isAdmin: boolean;
   cuzlers: CuzlerType[];
@@ -36,179 +41,69 @@ interface CuzlerTypeProps {
   setFilteredCuzlers: React.Dispatch<React.SetStateAction<CuzlerType[]>>;
   filterByHatim: (hatimNumber: number, data?: CuzlerType[]) => void;
   selectedHatim: number;
+  setSelectedHatim: React.Dispatch<React.SetStateAction<number>>;
 }
-const Cuzler = ({
-  setCurrentHatim,
-  isAdmin,
-  cuzlers,
-  setCuzlers,
-  adminPassword,
-  setAdminPassword,
-  showPassword,
-  setShowPassword,
-  handlePasswordSubmit,
-  filteredCuzlers,
-  setFilteredCuzlers,
-  filterByHatim,
-  selectedHatim,
-}: CuzlerTypeProps) => {
-  const [nameInputs, setNameInputs] = useState<Record<number, string>>({});
-  const [openDialog, setOpenDialog] = useState(false);
-  const [dialogMessage, setDialogMessage] = useState(
-    "Lütfen önceki cüzü tamamlayın, ardından bir sonraki cüze geçebilirsiniz."
-  ); // Store message dynamically
 
-  const isHatimComplete = (hatimNumber: number) => {
-    const hatimCuzlers = cuzlers.filter(
-      (cuz) => cuz.hatimNumber === hatimNumber
-    );
-    return hatimCuzlers.every(
-      (cuz) => cuz.personName && cuz.personName.trim() !== ""
-    );
-  };
-  const arePreviousHatimsComplete = (hatimNumber: number) => {
-    for (let i = 1; i < hatimNumber; i++) {
-      if (!isHatimComplete(i)) return false;
-    }
-    return true;
-  };
-
-  const handleInputChange = (cuzNumber: number, value: string) => {
-    setNameInputs((prev) => ({ ...prev, [cuzNumber]: value }));
-  };
-
-  const [updatedCuz, setUpdatedCuz] = useState<Record<number, boolean>>({});
-  const [editedFields, setEditedFields] = useState<Record<number, boolean>>({}); // Track which fields are being edited
-
-  const handleUpdateName = async (id: string, cuzNumber: number) => {
-    const newName = nameInputs[cuzNumber]?.trim() ?? ""; // Allow empty string
-
-    try {
-      const response = await fetch(
-        `https://ihya-2025-be0afcce5189.herokuapp.com/cuzlers/${id}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ personName: newName, isAdmin: isAdmin }),
-        }
-      );
-      const data = await response.json();
-      if (data.message === "exists") {
-        // Handle the "exists" case (e.g., show a message or prevent further update)
-        alert(
-          "Bu cuz baskasi tarafindan alindi. Sayfayi yenileyerek tekrar deneyin."
-        );
-        return;
-      }
-      if (!response.ok) {
-        throw new Error("Failed to update personName");
-      }
-      // 1️⃣ **Update both states to reflect the new (even blank) name immediately**
-      setCuzlers((prev) =>
-        prev.map((item) =>
-          item._id === id ? { ...item, personName: newName } : item
-        )
-      );
-
-      setFilteredCuzlers((prev) =>
-        prev.map((item) =>
-          item._id === id ? { ...item, personName: newName } : item
-        )
-      );
-
-      // 2️⃣ **Show "Güncellendi" for 2 seconds, then hide button**
-      setUpdatedCuz((prev) => ({ ...prev, [cuzNumber]: true }));
-
-      setTimeout(() => {
-        setUpdatedCuz((prev) => ({ ...prev, [cuzNumber]: false }));
-        setEditedFields((prev) => ({ ...prev, [cuzNumber]: false })); // Disable input after update
-        setNameInputs((prev) => ({ ...prev, [cuzNumber]: "" })); // Reset input field
-      }, 2000);
-    } catch (error: any) {
-      console.log(error);
-    }
-  };
-
-  const isPreviousCuzsFilled = (hatimNumber: number, cuzNumber: number) => {
-    const hatimCuzlers = cuzlers.filter(
-      (cuz) => cuz.hatimNumber === hatimNumber
-    );
-    return hatimCuzlers
-      .slice(0, cuzNumber - 1) // Check only previous cüzs
-      .every((cuz) => cuz.personName && cuz.personName.trim() !== "");
-  };
-  const generateRange = (start: number, end: number) =>
-    Array.from({ length: end - start + 1 }, (_, i) => start + i);
-
-  const allHatimNumbers = cuzlers.map((c) => c.hatimNumber);
-  const uniqueHatimNumbers = [...new Set(allHatimNumbers)];
-  const lastHatim = Math.max(...uniqueHatimNumbers);
-  // Example usage:
-  const hatimNumbers = generateRange(1, lastHatim); // Generates numbers from 10 to 90
-
-  const hatimRows = hatimNumbers.reduce((acc, num, index) => {
-    if (index % 5 === 0) acc.push([]);
-    acc[acc.length - 1].push(num);
-    return acc;
-  }, [] as number[][]);
-
-  // const deleteData = async () => {
-  //   const hatimNumbersDelete = [138];
-  //   try {
-  //     const deleteRequests = hatimNumbersDelete.map((hatimNumber) =>
-  //       fetch(
-  //         `https://ihya-2025-be0afcce5189.herokuapp.com/cuzlers/hatim/${hatimNumber}`,
-  //         {
-  //           method: "DELETE",
-  //           headers: {
-  //             "Content-Type": "application/json",
-  //           },
-  //         }
-  //       )
-  //     );
-
-  //     await Promise.all(deleteRequests);
-  //     console.log("All delete requests completed.");
-  //   } catch (error) {
-  //     console.error("Error deleting data:", error);
-  //   }
-  // };
-
-  return (
-    <Box sx={{ color: "black", height: "100%", padding: 2 }}>
-      {/* <button onClick={deleteData}>delete</button> */}
-      <Box sx={{ color: "black", height: "100%", padding: 2 }}>
-        {hatimRows.map((row, rowIndex) => (
-          <Box
-            key={rowIndex}
-            sx={{
-              display: "flex",
-              gap: 1,
-              marginBottom: 2,
-              justifyContent: "center",
-              width: "100%",
-            }}
-          >
-            {row.map((num) => (
+// Memoized component for accordion content
+const AccordionContent = React.memo(
+  ({
+    section,
+    selectedHatim,
+    filteredCuzlers,
+    isAdmin,
+    nameInputs,
+    editedFields,
+    updatedCuz,
+    handleInputChange,
+    handleUpdateName,
+    handleHatimClick,
+    isPreviousCuzsFilled,
+    arePreviousHatimsComplete,
+    setEditedFields,
+  }: {
+    section: { start: number; end: number; hatims: number[] };
+    selectedHatim: number;
+    filteredCuzlers: CuzlerType[];
+    isAdmin: boolean;
+    nameInputs: Record<number, string>;
+    editedFields: Record<number, boolean>;
+    updatedCuz: Record<number, boolean>;
+    handleInputChange: (cuzNumber: number, value: string) => void;
+    handleUpdateName: (id: string, cuzNumber: number) => void;
+    handleHatimClick: (num: number) => void;
+    isPreviousCuzsFilled: (hatimNumber: number, cuzNumber: number) => boolean;
+    arePreviousHatimsComplete: (num: number) => boolean;
+    setEditedFields: React.Dispatch<
+      React.SetStateAction<Record<number, boolean>>
+    >;
+  }) => {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 2,
+          width: "100%",
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 1,
+            justifyContent: "center",
+            width: "100%",
+          }}
+        >
+          {[...section.hatims]
+            .sort((a, b) => a - b)
+            .map((num) => (
               <Button
                 key={num}
                 variant={selectedHatim === num ? "contained" : "outlined"}
-                onClick={() => {
-                  if (!arePreviousHatimsComplete(num) && !isAdmin) {
-                    setDialogMessage(
-                      "Lütfen önceki hatmi tamamlayın, ardından bir sonraki hatime geçebilirsiniz."
-                    );
-                    setOpenDialog(true);
-                  } else {
-                    filterByHatim(num);
-                    setCurrentHatim(num);
-                  }
-                }}
+                onClick={() => handleHatimClick(num)}
                 sx={{
-                  flex: 1,
-                  minWidth: "auto",
+                  minWidth: "100px",
                   fontSize: "0.8rem",
                   padding: "6px 8px",
                   backgroundColor:
@@ -226,101 +121,381 @@ const Cuzler = ({
                 Hatim {num}
               </Button>
             ))}
-          </Box>
-        ))}
-      </Box>
-      {/* List of Cuzlers */}
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-        {/* <Box>hi{num}</Box> */}
-        {filteredCuzlers.map((item) => (
-          <Box
-            key={item._id}
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
-              background: "#cccccc",
-              padding: 1,
-              borderRadius: 1,
-            }}
-          >
-            <span>Cüz {item.cuzNumber}:</span>
+        </Box>
 
-            {/* Show Input Only If Editing, Otherwise Show Name */}
-            {editedFields[item.cuzNumber] || !item.personName ? (
-              <>
-                <TextField
-                  size="small"
-                  placeholder="Isminizi yaziniz"
-                  value={nameInputs[item.cuzNumber] ?? item.personName}
-                  onChange={(e) =>
-                    handleInputChange(item.cuzNumber, e.target.value)
-                  }
-                  disabled={
-                    !isPreviousCuzsFilled(item.hatimNumber, item.cuzNumber) &&
-                    !isAdmin
-                  } // Disable input unless all previous cüzs are taken
-                  sx={{
-                    background: "white",
-                    border: "1px solid #ccc",
-                    width: "170px",
-                  }}
-                />
-
-                <Button
-                  variant="contained"
-                  size="small"
-                  onClick={() => handleUpdateName(item._id, item.cuzNumber)}
-                  disabled={
-                    !isPreviousCuzsFilled(item.hatimNumber, item.cuzNumber) &&
-                    !isAdmin
-                  } // Disable if input is disabled
-                  sx={{
-                    backgroundColor:
-                      !isPreviousCuzsFilled(item.hatimNumber, item.cuzNumber) &&
-                      !isAdmin
-                        ? "#ccc"
-                        : "primary", // Gray out if disabled
-                    color:
-                      !isPreviousCuzsFilled(item.hatimNumber, item.cuzNumber) &&
-                      !isAdmin
-                        ? "#666"
-                        : "white", // Adjust text color
-                    cursor:
-                      !isPreviousCuzsFilled(item.hatimNumber, item.cuzNumber) &&
-                      !isAdmin
-                        ? "not-allowed"
-                        : "pointer", // Show "not-allowed" cursor
-                  }}
-                >
-                  {updatedCuz[item.cuzNumber]
-                    ? "Güncellendi"
-                    : item.personName
-                    ? "Güncelle"
-                    : "Ekle"}
-                </Button>
-              </>
-            ) : (
-              // Show name as text, allow admin to click to edit
-              <span
-                style={{
-                  cursor: isAdmin ? "pointer" : "default",
-                  fontWeight: isAdmin ? "bold" : "normal",
+        {section.hatims.includes(selectedHatim) && (
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+            {filteredCuzlers.map((item) => (
+              <Box
+                key={item._id}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                  background: "#cccccc",
+                  padding: 1,
+                  borderRadius: 1,
                 }}
-                onClick={() =>
-                  isAdmin &&
-                  setEditedFields((prev) => ({
-                    ...prev,
-                    [item.cuzNumber]: true,
-                  }))
-                }
               >
-                {item.personName || "—"} {/* Show dash if blank */}
-              </span>
-            )}
+                <span>Cüz {item.cuzNumber}:</span>
+
+                {editedFields[item.cuzNumber] || !item.personName ? (
+                  <>
+                    <TextField
+                      size="small"
+                      placeholder="Isminizi yaziniz"
+                      value={nameInputs[item.cuzNumber] ?? item.personName}
+                      onChange={(e) =>
+                        handleInputChange(item.cuzNumber, e.target.value)
+                      }
+                      disabled={
+                        !isPreviousCuzsFilled(
+                          item.hatimNumber,
+                          item.cuzNumber
+                        ) && !isAdmin
+                      }
+                      sx={{
+                        background: "white",
+                        border: "1px solid #ccc",
+                        width: "170px",
+                      }}
+                    />
+
+                    <Button
+                      variant="contained"
+                      size="small"
+                      onClick={() => handleUpdateName(item._id, item.cuzNumber)}
+                      disabled={
+                        !isPreviousCuzsFilled(
+                          item.hatimNumber,
+                          item.cuzNumber
+                        ) && !isAdmin
+                      }
+                      sx={{
+                        backgroundColor:
+                          !isPreviousCuzsFilled(
+                            item.hatimNumber,
+                            item.cuzNumber
+                          ) && !isAdmin
+                            ? "#ccc"
+                            : "primary",
+                        color:
+                          !isPreviousCuzsFilled(
+                            item.hatimNumber,
+                            item.cuzNumber
+                          ) && !isAdmin
+                            ? "#666"
+                            : "white",
+                        cursor:
+                          !isPreviousCuzsFilled(
+                            item.hatimNumber,
+                            item.cuzNumber
+                          ) && !isAdmin
+                            ? "not-allowed"
+                            : "pointer",
+                      }}
+                    >
+                      {updatedCuz[item.cuzNumber]
+                        ? "Güncellendi"
+                        : item.personName
+                        ? "Güncelle"
+                        : "Ekle"}
+                    </Button>
+                  </>
+                ) : (
+                  <span
+                    style={{
+                      cursor: isAdmin ? "pointer" : "default",
+                      fontWeight: isAdmin ? "bold" : "normal",
+                    }}
+                    onClick={() =>
+                      isAdmin &&
+                      setEditedFields((prev) => ({
+                        ...prev,
+                        [item.cuzNumber]: true,
+                      }))
+                    }
+                  >
+                    {item.personName || "—"}
+                  </span>
+                )}
+              </Box>
+            ))}
           </Box>
+        )}
+      </Box>
+    );
+  }
+);
+
+const Cuzlers = ({
+  setCurrentHatim,
+  isAdmin,
+  cuzlers,
+  setCuzlers,
+  adminPassword,
+  setAdminPassword,
+  showPassword,
+  setShowPassword,
+  handlePasswordSubmit,
+  filteredCuzlers,
+  setFilteredCuzlers,
+  filterByHatim,
+  selectedHatim,
+  setSelectedHatim,
+}: CuzlersTypeProps) => {
+  const [nameInputs, setNameInputs] = useState<Record<number, string>>({});
+  const [openDialog, setOpenDialog] = useState(false);
+  const [expandedSection, setExpandedSection] = useState<number | false>(false);
+  const [dialogMessage, setDialogMessage] = useState(
+    "Lütfen önceki cüzü tamamlayın, ardından bir sonraki cüze geçebilirsiniz."
+  );
+  const [updatedCuz, setUpdatedCuz] = useState<Record<number, boolean>>({});
+  const [editedFields, setEditedFields] = useState<Record<number, boolean>>({});
+  const updateTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
+
+  // Memoize expensive computations
+  const allHatimNumbers = useMemo(
+    () => cuzlers.map((c) => c.hatimNumber),
+    [cuzlers]
+  );
+  const uniqueHatimNumbers = useMemo(
+    () => [...new Set(allHatimNumbers)],
+    [allHatimNumbers]
+  );
+  const lastHatim = useMemo(
+    () => Math.max(...uniqueHatimNumbers),
+    [uniqueHatimNumbers]
+  );
+
+  // Memoize section creation
+  const hatimSections = useMemo(() => {
+    const sections = [];
+    for (let i = 1; i <= lastHatim; i += 50) {
+      const sectionHatims = uniqueHatimNumbers.filter(
+        (num) => num >= i && num < i + 50
+      );
+      if (sectionHatims.length > 0) {
+        sections.push({
+          start: i,
+          end: Math.min(i + 49, lastHatim),
+          hatims: sectionHatims,
+        });
+      }
+    }
+    return sections;
+  }, [lastHatim, uniqueHatimNumbers]);
+
+  const lastSectionIndex = useMemo(
+    () => hatimSections.length - 1,
+    [hatimSections]
+  );
+
+  // Memoize handlers
+  const handleInputChange = useCallback((cuzNumber: number, value: string) => {
+    setNameInputs((prev) => ({ ...prev, [cuzNumber]: value }));
+  }, []);
+
+  const handleUpdateName = useCallback(
+    async (id: string, cuzNumber: number) => {
+      const newName = nameInputs[cuzNumber]?.trim() ?? "";
+
+      try {
+        const response = await fetch(
+          `https://ihya-2025-be0afcce5189.herokuapp.com/cuzlers/${id}`,
+          {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ personName: newName, isAdmin: isAdmin }),
+          }
+        );
+        const data = await response.json();
+        if (data.message === "exists") {
+          alert(
+            "Bu cuz baskasi tarafindan alindi. Sayfayi yenileyerek tekrar deneyin."
+          );
+          return;
+        }
+        if (!response.ok) {
+          throw new Error("Failed to update personName");
+        }
+
+        // Batch state updates
+        const updates = () => {
+          setCuzlers((prev) =>
+            prev.map((item) =>
+              item._id === id ? { ...item, personName: newName } : item
+            )
+          );
+
+          setFilteredCuzlers((prev) =>
+            prev.map((item) =>
+              item._id === id ? { ...item, personName: newName } : item
+            )
+          );
+
+          setUpdatedCuz((prev) => ({ ...prev, [cuzNumber]: true }));
+
+          if (updateTimeoutRef.current) {
+            clearTimeout(updateTimeoutRef.current);
+          }
+
+          updateTimeoutRef.current = setTimeout(() => {
+            setUpdatedCuz((prev) => ({ ...prev, [cuzNumber]: false }));
+            setEditedFields((prev) => ({ ...prev, [cuzNumber]: false }));
+            setNameInputs((prev) => ({ ...prev, [cuzNumber]: "" }));
+          }, 2000);
+        };
+
+        updates();
+      } catch (error: unknown) {
+        console.error("Error updating name:", error);
+      }
+    },
+    [nameInputs, isAdmin, setCuzlers, setFilteredCuzlers]
+  );
+
+  const isHatimComplete = useCallback(
+    (hatimNumber: number) => {
+      const hatimCuzlers = cuzlers.filter(
+        (cuz) => cuz.hatimNumber === hatimNumber
+      );
+      return hatimCuzlers.every(
+        (cuz) => cuz.personName && cuz.personName.trim() !== ""
+      );
+    },
+    [cuzlers]
+  );
+
+  const arePreviousHatimsComplete = useCallback(
+    (hatimNumber: number) => {
+      for (let i = 1; i < hatimNumber; i++) {
+        if (!isHatimComplete(i)) return false;
+      }
+      return true;
+    },
+    [isHatimComplete]
+  );
+
+  // Memoize the hatim click handler with debounce
+  const handleHatimClick = useCallback(
+    debounce((num: number) => {
+      if (!arePreviousHatimsComplete(num) && !isAdmin) {
+        setDialogMessage(
+          "Lütfen önceki hatmi tamamlayın, ardından bir sonraki hatime geçebilirsiniz."
+        );
+        setOpenDialog(true);
+      } else {
+        // Batch state updates
+        setCurrentHatim(num);
+        filterByHatim(num);
+      }
+    }, 100),
+    [isAdmin, setCurrentHatim, filterByHatim, arePreviousHatimsComplete]
+  );
+
+  // Cleanup debounced function on unmount
+  React.useEffect(() => {
+    return () => {
+      handleHatimClick.cancel();
+    };
+  }, [handleHatimClick]);
+
+  // Set the last section as expanded by default
+  React.useEffect(() => {
+    setExpandedSection(lastSectionIndex);
+  }, [lastSectionIndex]);
+
+  // Cleanup timeout on unmount
+  React.useEffect(() => {
+    return () => {
+      if (updateTimeoutRef.current) {
+        clearTimeout(updateTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const isPreviousCuzsFilled = useCallback(
+    (hatimNumber: number, cuzNumber: number) => {
+      const hatimCuzlers = cuzlers.filter(
+        (cuz) => cuz.hatimNumber === hatimNumber
+      );
+      return hatimCuzlers
+        .slice(0, cuzNumber - 1)
+        .every((cuz) => cuz.personName && cuz.personName.trim() !== "");
+    },
+    [cuzlers]
+  );
+
+  const generateRange = (start: number, end: number) =>
+    Array.from({ length: end - start + 1 }, (_, i) => start + i);
+
+  // Create sections of 50 hatims each
+  const createHatimSections = () => {
+    const sections = [];
+    for (let i = 1; i <= lastHatim; i += 50) {
+      const sectionHatims = uniqueHatimNumbers.filter(
+        (num) => num >= i && num < i + 50
+      );
+      if (sectionHatims.length > 0) {
+        sections.push({
+          start: i,
+          end: Math.min(i + 49, lastHatim),
+          hatims: sectionHatims,
+        });
+      }
+    }
+    return sections;
+  };
+
+  return (
+    <Box sx={{ color: "black", height: "100%", padding: 2 }}>
+      <Box sx={{ color: "black", height: "100%", padding: 2 }}>
+        {hatimSections.map((section, sectionIndex) => (
+          <Accordion
+            key={sectionIndex}
+            sx={{ mb: 1 }}
+            expanded={expandedSection === sectionIndex}
+            onChange={(_, isExpanded) =>
+              setExpandedSection(isExpanded ? sectionIndex : false)
+            }
+          >
+            <AccordionSummary
+              expandIcon={<ExpandMore />}
+              sx={{
+                backgroundColor: "#f5f5f5",
+                "&:hover": {
+                  backgroundColor: "#e0e0e0",
+                },
+              }}
+            >
+              <Typography>
+                Hatim {section.start} - {section.end}
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <AccordionContent
+                section={section}
+                selectedHatim={selectedHatim}
+                filteredCuzlers={filteredCuzlers}
+                isAdmin={isAdmin}
+                nameInputs={nameInputs}
+                editedFields={editedFields}
+                updatedCuz={updatedCuz}
+                handleInputChange={handleInputChange}
+                handleUpdateName={handleUpdateName}
+                handleHatimClick={handleHatimClick}
+                isPreviousCuzsFilled={isPreviousCuzsFilled}
+                arePreviousHatimsComplete={arePreviousHatimsComplete}
+                setEditedFields={setEditedFields}
+              />
+            </AccordionDetails>
+          </Accordion>
         ))}
       </Box>
+
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
         <DialogTitle style={{ fontWeight: "bold", textAlign: "center" }}>
           ⚠️ Uyarı
@@ -393,4 +568,4 @@ const Cuzler = ({
   );
 };
 
-export default Cuzler;
+export default Cuzlers;
