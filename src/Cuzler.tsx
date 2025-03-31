@@ -8,15 +8,17 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-} from "@mui/material";
-import React, { useState, useMemo, useCallback, useRef } from "react";
-import { Visibility, VisibilityOff, ExpandMore } from "@mui/icons-material";
-import {
   Dialog,
   DialogActions,
   DialogContent,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
   DialogTitle,
 } from "@mui/material";
+import React, { useState, useMemo, useCallback, useRef } from "react";
+import { Visibility, VisibilityOff, ExpandMore } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import debounce from "lodash/debounce";
 
@@ -42,6 +44,7 @@ interface CuzlersTypeProps {
   filterByHatim: (hatimNumber: number, data?: CuzlerType[]) => void;
   selectedHatim: number;
   setSelectedHatim: React.Dispatch<React.SetStateAction<number>>;
+  setIsAdmin: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 // Memoized component for accordion content
@@ -243,6 +246,7 @@ const Cuzlers = ({
   filterByHatim,
   selectedHatim,
   setSelectedHatim,
+  setIsAdmin,
 }: CuzlersTypeProps) => {
   const [nameInputs, setNameInputs] = useState<Record<number, string>>({});
   const [openDialog, setOpenDialog] = useState(false);
@@ -451,119 +455,215 @@ const Cuzlers = ({
   };
 
   return (
-    <Box sx={{ color: "black", height: "100%", padding: 2 }}>
-      <Box sx={{ color: "black", height: "100%", padding: 2 }}>
-        {hatimSections.map((section, sectionIndex) => (
-          <Accordion
-            key={sectionIndex}
-            sx={{ mb: 1 }}
-            expanded={expandedSection === sectionIndex}
-            onChange={(_, isExpanded) =>
-              setExpandedSection(isExpanded ? sectionIndex : false)
-            }
-          >
-            <AccordionSummary
-              expandIcon={<ExpandMore />}
-              sx={{
-                backgroundColor: "#f5f5f5",
+    <Box sx={{ maxWidth: 800, margin: "0 auto", padding: 2 }}>
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        <Typography variant="h4" component="h1" gutterBottom>
+          Kadir Gecesi Hatimleri
+        </Typography>
+
+        <FormControl fullWidth>
+          <InputLabel sx={{ color: "white" }}>Hatim Seçin</InputLabel>
+          <Select
+            value={selectedHatim}
+            label="Hatim Seçin"
+            onChange={(e) => handleHatimClick(Number(e.target.value))}
+            disabled={!isAdmin && !arePreviousHatimsComplete(selectedHatim)}
+            sx={{
+              color: "white",
+              backgroundColor: "#333",
+              "& .MuiOutlinedInput-notchedOutline": {
+                borderColor: "white",
+              },
+              "&:hover .MuiOutlinedInput-notchedOutline": {
+                borderColor: "white",
+              },
+              "& .MuiSelect-icon": {
+                color: "white",
+              },
+              "& .MuiMenu-root": {
+                backgroundColor: "grey",
+              },
+              "& .MuiMenu-paper": {
+                backgroundColor: "grey",
+                color: "white",
+              },
+              "& .MuiMenuItem-root": {
+                color: "white",
                 "&:hover": {
-                  backgroundColor: "#e0e0e0",
+                  backgroundColor: "#333",
+                  color: "#666",
                 },
+                "&.Mui-disabled": {
+                  color: "#666",
+                },
+                "&.Mui-selected": {
+                  backgroundColor: "primary.main",
+                  color: "white",
+                },
+              },
+            }}
+          >
+            {[...uniqueHatimNumbers]
+              .sort((a, b) => a - b)
+              .map((num) => (
+                <MenuItem
+                  key={num}
+                  value={num}
+                  disabled={!isAdmin && !arePreviousHatimsComplete(num)}
+                >
+                  Hatim {num}
+                </MenuItem>
+              ))}
+          </Select>
+        </FormControl>
+
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+          {filteredCuzlers.map((item) => (
+            <Box
+              key={item._id}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                background: "#cccccc",
+                padding: 1,
+                borderRadius: 1,
+                color: "grey",
               }}
             >
-              <Typography>
-                Hatim {section.start} - {section.end}
-              </Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <AccordionContent
-                section={section}
-                selectedHatim={selectedHatim}
-                filteredCuzlers={filteredCuzlers}
-                isAdmin={isAdmin}
-                nameInputs={nameInputs}
-                editedFields={editedFields}
-                updatedCuz={updatedCuz}
-                handleInputChange={handleInputChange}
-                handleUpdateName={handleUpdateName}
-                handleHatimClick={handleHatimClick}
-                isPreviousCuzsFilled={isPreviousCuzsFilled}
-                arePreviousHatimsComplete={arePreviousHatimsComplete}
-                setEditedFields={setEditedFields}
-              />
-            </AccordionDetails>
-          </Accordion>
-        ))}
+              <span>Cüz {item.cuzNumber}:</span>
+
+              {editedFields[item.cuzNumber] || !item.personName ? (
+                <>
+                  <TextField
+                    size="small"
+                    placeholder="Isminizi yaziniz"
+                    value={nameInputs[item.cuzNumber] ?? item.personName}
+                    onChange={(e) =>
+                      handleInputChange(item.cuzNumber, e.target.value)
+                    }
+                    disabled={
+                      !isPreviousCuzsFilled(item.hatimNumber, item.cuzNumber) &&
+                      !isAdmin
+                    }
+                    sx={{
+                      background: "white",
+                      border: "1px solid #ccc",
+                      width: "170px",
+                    }}
+                  />
+
+                  <Button
+                    variant="contained"
+                    size="small"
+                    onClick={() => handleUpdateName(item._id, item.cuzNumber)}
+                    disabled={
+                      !isPreviousCuzsFilled(item.hatimNumber, item.cuzNumber) &&
+                      !isAdmin
+                    }
+                    sx={{
+                      backgroundColor:
+                        !isPreviousCuzsFilled(
+                          item.hatimNumber,
+                          item.cuzNumber
+                        ) && !isAdmin
+                          ? "#ccc"
+                          : "primary",
+                      color:
+                        !isPreviousCuzsFilled(
+                          item.hatimNumber,
+                          item.cuzNumber
+                        ) && !isAdmin
+                          ? "#666"
+                          : "white",
+                      cursor:
+                        !isPreviousCuzsFilled(
+                          item.hatimNumber,
+                          item.cuzNumber
+                        ) && !isAdmin
+                          ? "not-allowed"
+                          : "pointer",
+                    }}
+                  >
+                    {updatedCuz[item.cuzNumber]
+                      ? "Güncellendi"
+                      : item.personName
+                      ? "Güncelle"
+                      : "Ekle"}
+                  </Button>
+                </>
+              ) : (
+                <span
+                  style={{
+                    cursor: isAdmin ? "pointer" : "default",
+                    fontWeight: isAdmin ? "bold" : "normal",
+                  }}
+                  onClick={() =>
+                    isAdmin &&
+                    setEditedFields((prev) => ({
+                      ...prev,
+                      [item.cuzNumber]: true,
+                    }))
+                  }
+                >
+                  {item.personName || "—"}
+                </span>
+              )}
+            </Box>
+          ))}
+        </Box>
       </Box>
 
-      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-        <DialogTitle style={{ fontWeight: "bold", textAlign: "center" }}>
-          ⚠️ Uyarı
-        </DialogTitle>
-        <DialogContent>
-          <p style={{ textAlign: "center" }}>{dialogMessage}</p>
-        </DialogContent>
-        <DialogActions style={{ justifyContent: "center" }}>
-          <Button
-            onClick={() => setOpenDialog(false)}
-            variant="contained"
-            color="primary"
-          >
-            Tamam
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Admin Password Input */}
-      {!isAdmin && (
-        <Box
-          sx={{
-            marginTop: 3,
-            background: "#EF9A9A",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            p: 1,
-          }}
-        >
-          <Typography sx={{ color: "white" }}>Admin girisi</Typography>
-          <Box
-            sx={{ marginTop: 3, display: "flex", alignItems: "center", gap: 1 }}
-          >
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+        {!isAdmin ? (
+          <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
             <TextField
-              size="small"
               type={showPassword ? "text" : "password"}
               placeholder="Admin şifresi"
               value={adminPassword}
               onChange={(e) => setAdminPassword(e.target.value)}
-              autoComplete="new-password"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton onClick={() => setShowPassword(!showPassword)}>
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
+              size="small"
+              sx={{
+                width: "200px",
+                "& .MuiInputBase-input::placeholder": {
+                  color: "white",
+                  opacity: 1,
+                },
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: "white",
+                  },
+                },
               }}
             />
             <Button
               variant="contained"
-              size="small"
-              color="primary"
               onClick={handlePasswordSubmit}
+              size="small"
             >
-              Tamam
+              Giriş
             </Button>
           </Box>
-        </Box>
-      )}
+        ) : (
+          <Button
+            variant="outlined"
+            onClick={() => setIsAdmin(false)}
+            size="small"
+          >
+            Çıkış
+          </Button>
+        )}
+      </Box>
 
-      {isAdmin && (
-        <Button component={Link} to="/admin">
-          Admin Paneli
-        </Button>
-      )}
+      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+        <DialogTitle>Uyarı</DialogTitle>
+        <DialogContent>
+          <Typography>{dialogMessage}</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDialog(false)}>Tamam</Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

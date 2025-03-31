@@ -78,6 +78,7 @@ const App: React.FC = () => {
                 filterByHatim={filterByHatim}
                 selectedHatim={selectedHatim}
                 setSelectedHatim={setSelectedHatim}
+                setIsAdmin={setIsAdmin}
               />
             </>
           }
