@@ -5,6 +5,10 @@ import {
   InputAdornment,
   TextField,
   Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import { CuzlerType } from "./Cuzler";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
@@ -31,6 +35,9 @@ const SuperAdmin = ({
   const [fullHatimName, setFullHatimName] = useState<string | undefined>();
   const [eklendiConfirm, setEklendiConfirm] = useState(false);
   const [eklendiConfirm2, setEklendiConfirm2] = useState(false);
+  const [hatimNumbersToDelete, setHatimNumbersToDelete] = useState<string>("");
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+  const [numbersToDelete, setNumbersToDelete] = useState<number[]>([]);
 
   const handleLocalPasswordSubmit = () => {
     handlePasswordSubmit(localPassword);
@@ -152,6 +159,32 @@ const SuperAdmin = ({
     }
   };
 
+  const handleDeleteClick = () => {
+    const numbers = hatimNumbersToDelete
+      .split(",")
+      .map((num) => parseInt(num.trim()))
+      .filter((num) => !isNaN(num));
+
+    if (numbers.length === 0) {
+      alert("Lütfen geçerli hatim numaralarını giriniz");
+      return;
+    }
+
+    setNumbersToDelete(numbers);
+    setOpenConfirmDialog(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    try {
+      await deleteData(numbersToDelete);
+      setHatimNumbersToDelete("");
+      setOpenConfirmDialog(false);
+      alert("Hatimler başarıyla silindi");
+    } catch (error) {
+      alert("Hatim silme işlemi başarısız oldu");
+    }
+  };
+
   return (
     <Box sx={{ background: "white", height: "100%", p: 3 }}>
       {isSuperAdmin ? (
@@ -263,28 +296,55 @@ const SuperAdmin = ({
             <Typography variant="h5" sx={{ color: "black", mb: 1 }}>
               Hatim Silme
             </Typography>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              <TextField
-                size="small"
-                type={"number"}
-                placeholder="Silinecek hatim numarası"
-                value={fullHatimNo === undefined ? "" : fullHatimNo}
-                onChange={(e) =>
-                  setFullHatimNo(
-                    e.target.value === "" ? undefined : Number(e.target.value)
-                  )
-                }
-              />
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              <Typography variant="body2" sx={{ color: "gray" }}>
+                Silmek istediğiniz hatim numaralarını virgülle ayırarak giriniz
+                (örn: 1,2,3)
+              </Typography>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <TextField
+                  size="small"
+                  fullWidth
+                  placeholder="Örn: 1,2,3"
+                  value={hatimNumbersToDelete}
+                  onChange={(e) => setHatimNumbersToDelete(e.target.value)}
+                />
+                <Button
+                  variant="contained"
+                  color="error"
+                  size="small"
+                  onClick={handleDeleteClick}
+                >
+                  Sil
+                </Button>
+              </Box>
+            </Box>
+          </Box>
+
+          <Dialog
+            open={openConfirmDialog}
+            onClose={() => setOpenConfirmDialog(false)}
+          >
+            <DialogTitle>Silme İşlemini Onayla</DialogTitle>
+            <DialogContent>
+              <Typography>
+                {numbersToDelete.length > 0 &&
+                  `${numbersToDelete.join(
+                    ", "
+                  )} numaralı hatimleri silmek istediğinizden emin misiniz?`}
+              </Typography>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setOpenConfirmDialog(false)}>İptal</Button>
               <Button
-                variant="contained"
+                onClick={handleConfirmDelete}
                 color="error"
-                size="small"
-                onClick={() => {}}
+                variant="contained"
               >
                 Sil
               </Button>
-            </Box>
-          </Box>
+            </DialogActions>
+          </Dialog>
         </Box>
       ) : (
         <Box
