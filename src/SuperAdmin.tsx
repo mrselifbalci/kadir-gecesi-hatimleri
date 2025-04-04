@@ -95,6 +95,20 @@ const SuperAdmin = ({
           }
         );
         console.log(response);
+
+        // Create new cuzler entries for each new hatim
+        const newCuzlers = newHatimNumbers.flatMap((hatimNumber) =>
+          Array.from({ length: 30 }, (_, i) => ({
+            _id: `${hatimNumber}-${i + 1}`, // Temporary ID
+            hatimNumber,
+            cuzNumber: i + 1,
+            personName: "",
+          }))
+        );
+
+        // Update the cuzlers state with new entries
+        setCuzlers((prevCuzlers) => [...prevCuzlers, ...newCuzlers]);
+
         setEklendiConfirm(true);
         setNewHatimsToAdd(undefined);
         setTimeout(() => {
@@ -265,8 +279,15 @@ const SuperAdmin = ({
             >
               <FormControl fullWidth sx={{ mb: 2 }}>
                 <FormLabel sx={{ color: "black" }}>Hatim Numaraları</FormLabel>
-                <FormGroup>
-                  {uniqueHatimNumbers
+                <FormGroup
+                  sx={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(2, 1fr)",
+                    gap: 1,
+                  }}
+                >
+                  {[...uniqueHatimNumbers]
+                    .sort((a, b) => a - b)
                     .filter((hatimNo) => {
                       const hatimCuzlers = cuzlers.filter(
                         (c) => c.hatimNumber === hatimNo
