@@ -8,6 +8,7 @@ import {
   DialogContent,
   DialogActions,
 } from "@mui/material";
+import { Error as ErrorIcon } from "@mui/icons-material";
 import { useState, useEffect } from "react";
 import { CuzlerType } from "./Cuzler";
 
@@ -17,6 +18,7 @@ const HatimAl = () => {
   const [hatimCount, setHatimCount] = useState<string>("");
   const [eklendiConfirm, setEklendiConfirm] = useState(false);
   const [successModalOpen, setSuccessModalOpen] = useState(false);
+  const [errorModalOpen, setErrorModalOpen] = useState(false);
   const [assignedHatims, setAssignedHatims] = useState<number[]>([]);
 
   // Fetch cuzlers data on component mount
@@ -83,7 +85,7 @@ const HatimAl = () => {
       .sort((a, b) => a - b);
 
     if (availableHatims.length === 0) {
-      alert("Şu anda boş hatim bulunmamaktadır.");
+      setErrorModalOpen(true);
       return;
     }
 
@@ -134,80 +136,83 @@ const HatimAl = () => {
   };
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Typography variant="h4" sx={{ mb: 3 }}>
-        Hatim Al
-      </Typography>
-
-      <Box sx={{ border: "solid 2px grey", borderRadius: "8px", p: 3 }}>
-        <Typography variant="h5" sx={{ color: "white", mb: 1 }}>
-          Kaç hatim almak istediğinizi ve adınızı yazarak ekle'ye basınız.
+    <Box sx={{ height: "100%", p: 3, width: "100%" }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          p: 1,
+        }}
+      >
+        <Typography variant="h6" sx={{ mb: 2 }}>
+          Almak istediginiz hatim sayisini ve isminizi yazarak ekleye basiniz
         </Typography>
-        <Box sx={{ display: "flex", flexDirection: "column" }}>
-          <TextField
-            size="small"
-            type="number"
-            placeholder="Kaç hatim almak istiyorsunuz?"
-            value={hatimCount}
-            onChange={(e) => setHatimCount(e.target.value)}
-            sx={{
-              mb: 2,
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderColor: "white",
-                },
-                "&:hover fieldset": {
-                  borderColor: "white",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "white",
-                },
-                color: "white",
+        <TextField
+          size="small"
+          type="number"
+          placeholder="Kaç hatim almak istiyorsunuz?"
+          value={hatimCount}
+          onChange={(e) => setHatimCount(e.target.value)}
+          sx={{
+            width: "50%",
+            mb: 2,
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor: "white",
               },
-              "& .MuiInputBase-input::placeholder": {
-                color: "white",
-                opacity: 0.7,
+              "&:hover fieldset": {
+                borderColor: "white",
               },
-            }}
-          />
-          <TextField
-            multiline
-            minRows={4}
-            size="small"
-            type="text"
-            placeholder="Okuyacak isim"
-            value={fullHatimName}
-            onChange={(e) => setFullHatimName(e.target.value)}
-            sx={{
-              mb: 2,
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderColor: "white",
-                },
-                "&:hover fieldset": {
-                  borderColor: "white",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "white",
-                },
-                color: "white",
+              "&.Mui-focused fieldset": {
+                borderColor: "white",
               },
-              "& .MuiInputBase-input::placeholder": {
-                color: "white",
-                opacity: 0.7,
+              color: "white",
+            },
+            "& .MuiInputBase-input::placeholder": {
+              color: "white",
+              opacity: 0.7,
+            },
+          }}
+        />
+        <TextField
+          multiline
+          minRows={4}
+          size="small"
+          type="text"
+          placeholder="Okuyacak isim"
+          value={fullHatimName}
+          onChange={(e) => setFullHatimName(e.target.value)}
+          sx={{
+            width: "50%",
+            mb: 2,
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor: "white",
               },
-            }}
-          />
-          <Button
-            variant="contained"
-            size="small"
-            color="primary"
-            onClick={addFullHatim}
-            sx={{ ml: 1 }}
-          >
-            Ekle
-          </Button>
-        </Box>
+              "&:hover fieldset": {
+                borderColor: "white",
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "white",
+              },
+              color: "white",
+            },
+            "& .MuiInputBase-input::placeholder": {
+              color: "white",
+              opacity: 0.7,
+            },
+          }}
+        />
+        <Button
+          variant="contained"
+          size="small"
+          color="primary"
+          onClick={addFullHatim}
+          sx={{ ml: 1 }}
+        >
+          Ekle
+        </Button>
       </Box>
 
       <Dialog
@@ -237,6 +242,42 @@ const HatimAl = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setSuccessModalOpen(false)} color="primary">
+            Tamam
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={errorModalOpen}
+        onClose={() => setErrorModalOpen(false)}
+        PaperProps={{
+          sx: {
+            backgroundColor: "#333",
+            color: "white",
+          },
+        }}
+      >
+        <DialogTitle
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+            color: "#EF5350",
+            fontSize: "1.5em",
+            fontWeight: "bold",
+          }}
+        >
+          <ErrorIcon sx={{ fontSize: 40, color: "#EF5350" }} />
+          Hatim Alınamadı
+        </DialogTitle>
+        <DialogContent>
+          <Typography>
+            Şu anda boş hatim bulunmamaktadır. Lütfen yeni hatim eklenmesini
+            bekleyiniz. Ya da ilgili kişiye hatırlatınız.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setErrorModalOpen(false)} color="primary">
             Tamam
           </Button>
         </DialogActions>

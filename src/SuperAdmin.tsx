@@ -19,7 +19,11 @@ import {
   Checkbox,
 } from "@mui/material";
 import { CuzlerType } from "./Cuzler";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
+import {
+  Visibility,
+  VisibilityOff,
+  Error as ErrorIcon,
+} from "@mui/icons-material";
 import * as XLSX from "xlsx";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -278,44 +282,75 @@ const SuperAdmin = ({
               }}
             >
               <FormControl fullWidth sx={{ mb: 2 }}>
-                <FormLabel sx={{ color: "black" }}>Boş Olan Hatimler</FormLabel>
-                <FormGroup
-                  sx={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(2, 1fr)",
-                    gap: 1,
-                  }}
-                >
-                  {[...uniqueHatimNumbers]
-                    .sort((a, b) => a - b)
-                    .filter((hatimNo) => {
-                      const hatimCuzlers = cuzlers.filter(
-                        (c) => c.hatimNumber === hatimNo
-                      );
-                      return hatimCuzlers.every((c) => !c.personName);
-                    })
-                    .map((num) => (
-                      <FormControlLabel
-                        key={num}
-                        control={
-                          <Checkbox
-                            checked={selectedHatims.includes(num)}
-                            onChange={(e) => {
-                              if (e.target.checked) {
-                                setSelectedHatims([...selectedHatims, num]);
-                              } else {
-                                setSelectedHatims(
-                                  selectedHatims.filter((h) => h !== num)
-                                );
-                              }
-                            }}
+                {[...uniqueHatimNumbers]
+                  .sort((a, b) => a - b)
+                  .filter((hatimNo) => {
+                    const hatimCuzlers = cuzlers.filter(
+                      (c) => c.hatimNumber === hatimNo
+                    );
+                    return hatimCuzlers.every((c) => !c.personName);
+                  }).length > 0 ? (
+                  <>
+                    <FormLabel sx={{ color: "black" }}>
+                      Boş Olan Hatimler
+                    </FormLabel>
+                    <FormGroup
+                      sx={{
+                        display: "grid",
+                        gridTemplateColumns: "repeat(2, 1fr)",
+                        gap: 1,
+                      }}
+                    >
+                      {[...uniqueHatimNumbers]
+                        .sort((a, b) => a - b)
+                        .filter((hatimNo) => {
+                          const hatimCuzlers = cuzlers.filter(
+                            (c) => c.hatimNumber === hatimNo
+                          );
+                          return hatimCuzlers.every((c) => !c.personName);
+                        })
+                        .map((num) => (
+                          <FormControlLabel
+                            key={num}
+                            control={
+                              <Checkbox
+                                checked={selectedHatims.includes(num)}
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    setSelectedHatims([...selectedHatims, num]);
+                                  } else {
+                                    setSelectedHatims(
+                                      selectedHatims.filter((h) => h !== num)
+                                    );
+                                  }
+                                }}
+                              />
+                            }
+                            label={`Hatim ${num}`}
+                            sx={{ color: "black" }}
                           />
-                        }
-                        label={`Hatim ${num}`}
-                        sx={{ color: "black" }}
-                      />
-                    ))}
-                </FormGroup>
+                        ))}
+                    </FormGroup>
+                  </>
+                ) : (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                      color: "#EF5350",
+                      fontSize: "1.2em",
+                      fontWeight: "bold",
+                      mt: 1,
+                    }}
+                  >
+                    <ErrorIcon sx={{ fontSize: 30, color: "#EF5350" }} />
+                    <Typography sx={{ color: "#EF5350" }}>
+                      Hiç boş hatim bulunmuyor, yukarıdaki kısımdan yeni hatim
+                      ekleyin.
+                    </Typography>
+                  </Box>
+                )}
               </FormControl>
               <TextField
                 multiline
@@ -325,6 +360,16 @@ const SuperAdmin = ({
                 placeholder="Okuyacak isim"
                 value={fullHatimName === undefined ? "" : fullHatimName}
                 onChange={(e) => setFullHatimName(e.target.value)}
+                disabled={
+                  [...uniqueHatimNumbers]
+                    .sort((a, b) => a - b)
+                    .filter((hatimNo) => {
+                      const hatimCuzlers = cuzlers.filter(
+                        (c) => c.hatimNumber === hatimNo
+                      );
+                      return hatimCuzlers.every((c) => !c.personName);
+                    }).length === 0
+                }
                 sx={{ mb: 2 }}
               />
               <Button
@@ -333,6 +378,16 @@ const SuperAdmin = ({
                 color="primary"
                 onClick={addFullHatim}
                 sx={{ ml: 1 }}
+                disabled={
+                  [...uniqueHatimNumbers]
+                    .sort((a, b) => a - b)
+                    .filter((hatimNo) => {
+                      const hatimCuzlers = cuzlers.filter(
+                        (c) => c.hatimNumber === hatimNo
+                      );
+                      return hatimCuzlers.every((c) => !c.personName);
+                    }).length === 0
+                }
               >
                 Ekle
               </Button>
