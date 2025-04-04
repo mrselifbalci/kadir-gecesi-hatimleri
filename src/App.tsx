@@ -1,7 +1,11 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Cuzler, { CuzlerType } from "./Cuzler";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { Box, Button, Container } from "@mui/material";
+import Cuzler from "./Cuzler";
+import HatimAl from "./HatimAl";
+import Header from "./components/Header";
 import { useEffect, useState } from "react";
 import Admin from "./Admin";
+import { CuzlerType } from "./Cuzler";
 
 const App: React.FC = () => {
   const [currentHatim, setCurrentHatim] = useState(260);
@@ -10,13 +14,11 @@ const App: React.FC = () => {
     return storedAdmin === "true";
   });
   const [cuzlers, setCuzlers] = useState<CuzlerType[]>([]);
-  const [adminPassword, setAdminPassword] = useState<string>("");
-  const [showPassword, setShowPassword] = useState(false);
   const [filteredCuzlers, setFilteredCuzlers] = useState<CuzlerType[]>([]);
   const [selectedHatim, setSelectedHatim] = useState<number>(1);
 
-  const handlePasswordSubmit = () => {
-    if (adminPassword === "LONDRA") {
+  const handlePasswordSubmit = (password: string) => {
+    if (password === "LONDRA") {
       setIsAdmin(true);
       localStorage.setItem("isAdmin", "true");
     } else {
@@ -39,11 +41,6 @@ const App: React.FC = () => {
           throw new Error("Failed to fetch data");
         }
         const result = await response.json();
-        // console.log(
-        //   result.response.filter((item: any) => {
-        //     return item.personName.toLowerCase().includes("mustafa b");
-        //   })
-        // );
         const sortedData = result.response.sort(
           (a: CuzlerType, b: CuzlerType) => a.cuzNumber - b.cuzNumber
         );
@@ -66,23 +63,59 @@ const App: React.FC = () => {
     setFilteredCuzlers(filtered);
     setSelectedHatim(hatimNumber);
   };
+
+  const Layout = ({ children }: { children: React.ReactNode }) => (
+    <Container>
+      <Header />
+      {children}
+    </Container>
+  );
+
   return (
     <Router>
       <Routes>
         <Route
           path="/"
           element={
-            <>
+            <Box
+              sx={{ display: "flex", gap: 2, justifyContent: "center", my: 4 }}
+            >
+              <Button
+                component={Link}
+                to="/hatimal"
+                variant="contained"
+                color="primary"
+              >
+                Hatim Al
+              </Button>
+              <Button
+                component={Link}
+                to="/cuzal"
+                variant="contained"
+                color="primary"
+              >
+                Cüz Al
+              </Button>
+            </Box>
+          }
+        />
+        <Route
+          path="/hatimal"
+          element={
+            <Layout>
+              <HatimAl />
+            </Layout>
+          }
+        />
+        <Route
+          path="/cuzal"
+          element={
+            <Layout>
               <Cuzler
                 setCurrentHatim={setCurrentHatim}
                 isAdmin={isAdmin}
                 cuzlers={cuzlers}
                 setCuzlers={setCuzlers}
-                adminPassword={adminPassword}
-                setAdminPassword={setAdminPassword}
-                showPassword={showPassword}
-                setShowPassword={setShowPassword}
-                handlePasswordSubmit={handlePasswordSubmit}
                 filteredCuzlers={filteredCuzlers}
                 setFilteredCuzlers={setFilteredCuzlers}
                 filterByHatim={filterByHatim}
@@ -90,24 +123,20 @@ const App: React.FC = () => {
                 setSelectedHatim={setSelectedHatim}
                 setIsAdmin={handleLogout}
               />
-            </>
+            </Layout>
           }
         />
         <Route
           path="/admin"
           element={
-            <>
+            <Layout>
               <Admin
                 isAdmin={isAdmin}
                 cuzlers={cuzlers}
                 setCuzlers={setCuzlers}
-                adminPassword={adminPassword}
-                setAdminPassword={setAdminPassword}
-                showPassword={showPassword}
-                setShowPassword={setShowPassword}
                 handlePasswordSubmit={handlePasswordSubmit}
               />
-            </>
+            </Layout>
           }
         />
       </Routes>

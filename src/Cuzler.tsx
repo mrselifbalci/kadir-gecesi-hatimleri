@@ -34,17 +34,12 @@ interface CuzlersTypeProps {
   isAdmin: boolean;
   cuzlers: CuzlerType[];
   setCuzlers: React.Dispatch<React.SetStateAction<CuzlerType[]>>;
-  adminPassword: string;
-  setAdminPassword: React.Dispatch<React.SetStateAction<string>>;
-  showPassword: boolean;
-  setShowPassword: React.Dispatch<React.SetStateAction<boolean>>;
-  handlePasswordSubmit: () => void;
   filteredCuzlers: CuzlerType[];
   setFilteredCuzlers: React.Dispatch<React.SetStateAction<CuzlerType[]>>;
   filterByHatim: (hatimNumber: number, data?: CuzlerType[]) => void;
   selectedHatim: number;
   setSelectedHatim: React.Dispatch<React.SetStateAction<number>>;
-  setIsAdmin: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsAdmin: () => void;
 }
 
 // Memoized component for accordion content
@@ -231,16 +226,11 @@ const AccordionContent = React.memo(
   }
 );
 
-const Cuzlers = ({
+const Cuzler = ({
   setCurrentHatim,
   isAdmin,
   cuzlers,
   setCuzlers,
-  adminPassword,
-  setAdminPassword,
-  showPassword,
-  setShowPassword,
-  handlePasswordSubmit,
   filteredCuzlers,
   setFilteredCuzlers,
   filterByHatim,
@@ -614,56 +604,9 @@ const Cuzlers = ({
         </Box>
       </Box>
 
-      <Box sx={{ display: "flex", justifyContent: "center", mt: 2, gap: 2 }}>
-        {!isAdmin ? (
-          <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-            <TextField
-              type={showPassword ? "text" : "password"}
-              placeholder="Admin şifresi"
-              value={adminPassword}
-              onChange={(e) => setAdminPassword(e.target.value)}
-              size="small"
-              sx={{
-                width: "200px",
-                "& .MuiInputBase-input::placeholder": {
-                  color: "white",
-                  opacity: 1,
-                },
-                "& .MuiOutlinedInput-root": {
-                  "& fieldset": {
-                    borderColor: "white",
-                  },
-                },
-              }}
-            />
-            <Button
-              variant="contained"
-              onClick={handlePasswordSubmit}
-              size="small"
-            >
-              Giriş
-            </Button>
-          </Box>
-        ) : (
-          <>
-            <Button
-              variant="outlined"
-              onClick={() => setIsAdmin(false)}
-              size="small"
-            >
-              Çıkış
-            </Button>
-            <Button
-              variant="contained"
-              component={Link}
-              to="/admin"
-              size="small"
-            >
-              Admin Paneli
-            </Button>
-          </>
-        )}
-      </Box>
+      <Box
+        sx={{ display: "flex", justifyContent: "center", mt: 2, gap: 2 }}
+      ></Box>
 
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
         <DialogTitle>Uyarı</DialogTitle>
@@ -678,4 +621,4 @@ const Cuzlers = ({
   );
 };
 
-export default Cuzlers;
+export default Cuzler;

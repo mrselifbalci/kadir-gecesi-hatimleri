@@ -16,22 +16,12 @@ interface AdminProps {
   isAdmin: boolean;
   cuzlers: CuzlerType[];
   setCuzlers: React.Dispatch<React.SetStateAction<CuzlerType[]>>;
-  adminPassword: string;
-  setAdminPassword: React.Dispatch<React.SetStateAction<string>>;
-  showPassword: boolean;
-  setShowPassword: React.Dispatch<React.SetStateAction<boolean>>;
-  handlePasswordSubmit: () => void;
+  handlePasswordSubmit: (password: string) => void;
 }
 
-const Admin = ({
-  isAdmin,
-  cuzlers,
-  adminPassword,
-  setAdminPassword,
-  showPassword,
-  setShowPassword,
-  handlePasswordSubmit,
-}: AdminProps) => {
+const Admin = ({ isAdmin, cuzlers, handlePasswordSubmit }: AdminProps) => {
+  const [localPassword, setLocalPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [newHatimsToAdd, setNewHatimsToAdd] = useState<number | undefined>();
   const [fullHatimNo, setFullHatimNo] = useState<number | undefined>();
   const [fullHatimName, setFullHatimName] = useState<string | undefined>();
@@ -147,6 +137,10 @@ const Admin = ({
       }
     }
   };
+  const handleLocalPasswordSubmit = () => {
+    handlePasswordSubmit(localPassword);
+    setLocalPassword("");
+  };
   return (
     <Box sx={{ background: "white", height: "100vh", p: 3 }}>
       {isAdmin ? (
@@ -155,9 +149,6 @@ const Admin = ({
             <Typography variant="h4" component="h1">
               Admin Paneli
             </Typography>
-            <Button variant="contained" component={Link} to="/" size="small">
-              Ana Sayfa
-            </Button>
           </Box>
           <Box
             sx={{ border: "solid 2px grey", borderRadius: "8px", p: 3, mb: 3 }}
@@ -275,8 +266,8 @@ const Admin = ({
               size="small"
               type={showPassword ? "text" : "password"}
               placeholder="Admin şifresi"
-              value={adminPassword}
-              onChange={(e) => setAdminPassword(e.target.value)}
+              value={localPassword}
+              onChange={(e) => setLocalPassword(e.target.value)}
               autoComplete="new-password"
               InputProps={{
                 endAdornment: (
@@ -292,7 +283,7 @@ const Admin = ({
               variant="contained"
               size="small"
               color="primary"
-              onClick={handlePasswordSubmit}
+              onClick={handleLocalPasswordSubmit}
             >
               Tamam
             </Button>
