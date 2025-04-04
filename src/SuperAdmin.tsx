@@ -9,6 +9,14 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  FormLabel,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
 } from "@mui/material";
 import { CuzlerType } from "./Cuzler";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
@@ -40,6 +48,7 @@ const SuperAdmin = ({
   const [hatimNumbersToDelete, setHatimNumbersToDelete] = useState<string>("");
   const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
   const [numbersToDelete, setNumbersToDelete] = useState<number[]>([]);
+  const [selectedHatims, setSelectedHatims] = useState<number[]>([]);
 
   const handleLocalPasswordSubmit = () => {
     handlePasswordSubmit(localPassword);
@@ -119,46 +128,54 @@ const SuperAdmin = ({
   };
 
   const addFullHatim = async () => {
-    const filteredCuzler = cuzlers.filter(
-      (item) => item.hatimNumber === fullHatimNo
-    );
-    if (fullHatimNo && fullHatimNo > lastHatim) {
-      alert("Boyle bir hatim bulunmuyor. Once hatim eklemeniz gerekiyor.");
+    if (selectedHatims.length === 0) {
+      alert("Lütfen en az bir hatim seçiniz.");
       return;
     }
-    if (filteredCuzler.some((item) => item.personName)) {
-      alert("Bu hatimde alinmis cuzler var. Full hatim ekleyemezsiniz.");
-      return;
-    } else {
-      if (fullHatimNo) {
-        await deleteData([fullHatimNo]);
 
-        try {
-          const response = await fetch(
-            `https://ihya-2025-be0afcce5189.herokuapp.com/cuzlersdatawithname`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                hatimNumbers: [fullHatimNo],
-                personName: fullHatimName,
-              }),
-            }
-          );
-          const data = await response.json();
-          console.log(data);
-          setEklendiConfirm2(true);
-          setFullHatimNo(undefined);
-          setFullHatimName(undefined);
-          setTimeout(() => {
-            setEklendiConfirm2(false);
-          }, 500);
-        } catch (error: unknown) {
-          console.log(error);
+    if (!fullHatimName) {
+      alert("Lütfen okuyacak kişinin ismini giriniz.");
+      return;
+    }
+
+    try {
+      // Delete existing data for selected hatims
+      await deleteData(selectedHatims);
+
+      // Add new data with the person's name
+      const response = await fetch(
+        `https://ihya-2025-be0afcce5189.herokuapp.com/cuzlersdatawithname`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            hatimNumbers: selectedHatims,
+            personName: fullHatimName,
+          }),
         }
-      }
+      );
+      const data = await response.json();
+      console.log(data);
+
+      // Update the cuzlers state to reflect the changes immediately
+      setCuzlers((prevCuzlers) =>
+        prevCuzlers.map((cuz) =>
+          selectedHatims.includes(cuz.hatimNumber)
+            ? { ...cuz, personName: fullHatimName }
+            : cuz
+        )
+      );
+
+      setEklendiConfirm2(true);
+      setSelectedHatims([]);
+      setFullHatimName(undefined);
+      setTimeout(() => {
+        setEklendiConfirm2(false);
+      }, 500);
+    } catch (error: unknown) {
+      console.log(error);
     }
   };
 
@@ -205,8 +222,7 @@ const SuperAdmin = ({
             sx={{ border: "solid 2px grey", borderRadius: "8px", p: 3, mb: 3 }}
           >
             <Typography variant="h5" sx={{ color: "black", mb: 1 }}>
-              Eklemek istediginiz yeni hatim sayisini yazip 'Ekle' tusuna
-              basiniz.
+              Kaç yeni boş hatim eklemek istiyorsunuz?
             </Typography>
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <TextField
@@ -238,8 +254,8 @@ const SuperAdmin = ({
           </Box>
           <Box sx={{ border: "solid 2px grey", borderRadius: "8px", p: 3 }}>
             <Typography variant="h5" sx={{ color: "black", mb: 1 }}>
-              Full hatim olarak eklemek istediginiz hatim numarasini ve okuyacak
-              ismi yazip 'Ekle' butonuna tiklayiniz.
+              Full hatim olarak eklemek istediginiz hatim numaralarini ve
+              okuyacak ismi yazip 'Ekle' butonuna tiklayiniz.
             </Typography>
             <Box
               sx={{
@@ -247,18 +263,39 @@ const SuperAdmin = ({
                 flexDirection: "column",
               }}
             >
-              <TextField
-                size="small"
-                type={"number"}
-                placeholder="Hatim numarasi"
-                value={fullHatimNo === undefined ? "" : fullHatimNo}
-                onChange={(e) =>
-                  setFullHatimNo(
-                    e.target.value === "" ? undefined : Number(e.target.value)
-                  )
-                }
-                sx={{ mb: 2 }}
-              />
+              <FormControl fullWidth sx={{ mb: 2 }}>
+                <FormLabel sx={{ color: "black" }}>Hatim Numaraları</FormLabel>
+                <FormGroup>
+                  {uniqueHatimNumbers
+                    .filter((hatimNo) => {
+                      const hatimCuzlers = cuzlers.filter(
+                        (c) => c.hatimNumber === hatimNo
+                      );
+                      return hatimCuzlers.every((c) => !c.personName);
+                    })
+                    .map((num) => (
+                      <FormControlLabel
+                        key={num}
+                        control={
+                          <Checkbox
+                            checked={selectedHatims.includes(num)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setSelectedHatims([...selectedHatims, num]);
+                              } else {
+                                setSelectedHatims(
+                                  selectedHatims.filter((h) => h !== num)
+                                );
+                              }
+                            }}
+                          />
+                        }
+                        label={`Hatim ${num}`}
+                        sx={{ color: "black" }}
+                      />
+                    ))}
+                </FormGroup>
+              </FormControl>
               <TextField
                 multiline
                 minRows={4}
