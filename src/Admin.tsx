@@ -47,9 +47,10 @@ const Admin = ({ isAdmin, cuzlers, handlePasswordSubmit }: AdminProps) => {
   const lastHatim = Math.max(...uniqueHatimNumbers);
   const addNewHatims = async () => {
     if (newHatimsToAdd && newHatimsToAdd > 0) {
+      const startingNumber = uniqueHatimNumbers.length > 0 ? lastHatim + 1 : 1;
       const newHatimNumbers = Array.from(
         { length: newHatimsToAdd },
-        (_, i) => lastHatim + i + 1
+        (_, i) => startingNumber + i
       );
 
       try {

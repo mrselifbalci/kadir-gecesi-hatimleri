@@ -14,7 +14,7 @@ import { CuzlerType } from "./Cuzler";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import * as XLSX from "xlsx";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 interface SuperAdminProps {
   isSuperAdmin: boolean;
@@ -26,8 +26,10 @@ interface SuperAdminProps {
 const SuperAdmin = ({
   isSuperAdmin,
   cuzlers,
+  setCuzlers,
   handlePasswordSubmit,
 }: SuperAdminProps) => {
+  const navigate = useNavigate();
   const [localPassword, setLocalPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [newHatimsToAdd, setNewHatimsToAdd] = useState<number | undefined>();
@@ -66,9 +68,10 @@ const SuperAdmin = ({
 
   const addNewHatims = async () => {
     if (newHatimsToAdd && newHatimsToAdd > 0) {
+      const startingNumber = uniqueHatimNumbers.length > 0 ? lastHatim + 1 : 1;
       const newHatimNumbers = Array.from(
         { length: newHatimsToAdd },
-        (_, i) => lastHatim + i + 1
+        (_, i) => startingNumber + i
       );
 
       try {
@@ -177,9 +180,13 @@ const SuperAdmin = ({
   const handleConfirmDelete = async () => {
     try {
       await deleteData(numbersToDelete);
+      setCuzlers((prevCuzlers) =>
+        prevCuzlers.filter((cuz) => !numbersToDelete.includes(cuz.hatimNumber))
+      );
       setHatimNumbersToDelete("");
       setOpenConfirmDialog(false);
       alert("Hatimler başarıyla silindi");
+      localStorage.setItem("forceRefresh", "true");
     } catch (error) {
       alert("Hatim silme işlemi başarısız oldu");
     }
