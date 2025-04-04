@@ -614,7 +614,7 @@ const Cuzlers = ({
         </Box>
       </Box>
 
-      <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 2, gap: 2 }}>
         {!isAdmin ? (
           <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
             <TextField
@@ -645,13 +645,23 @@ const Cuzlers = ({
             </Button>
           </Box>
         ) : (
-          <Button
-            variant="outlined"
-            onClick={() => setIsAdmin(false)}
-            size="small"
-          >
-            Çıkış
-          </Button>
+          <>
+            <Button
+              variant="outlined"
+              onClick={() => setIsAdmin(false)}
+              size="small"
+            >
+              Çıkış
+            </Button>
+            <Button
+              variant="contained"
+              component={Link}
+              to="/admin"
+              size="small"
+            >
+              Admin Paneli
+            </Button>
+          </>
         )}
       </Box>
 

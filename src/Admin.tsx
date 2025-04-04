@@ -10,6 +10,7 @@ import { CuzlerType } from "./Cuzler";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import * as XLSX from "xlsx";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 interface AdminProps {
   isAdmin: boolean;
@@ -78,7 +79,7 @@ const Admin = ({
         setTimeout(() => {
           setEklendiConfirm(false);
         }, 400);
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.log(error);
       }
     }
@@ -140,7 +141,7 @@ const Admin = ({
           setTimeout(() => {
             setEklendiConfirm2(false);
           }, 500);
-        } catch (error: any) {
+        } catch (error: unknown) {
           console.log(error);
         }
       }
@@ -150,6 +151,14 @@ const Admin = ({
     <Box sx={{ background: "white", height: "100vh", p: 3 }}>
       {isAdmin ? (
         <Box>
+          <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
+            <Typography variant="h4" component="h1">
+              Admin Paneli
+            </Typography>
+            <Button variant="contained" component={Link} to="/" size="small">
+              Ana Sayfa
+            </Button>
+          </Box>
           <Box
             sx={{ border: "solid 2px grey", borderRadius: "8px", p: 3, mb: 3 }}
           >

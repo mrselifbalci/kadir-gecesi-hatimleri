@@ -5,7 +5,10 @@ import Admin from "./Admin";
 
 const App: React.FC = () => {
   const [currentHatim, setCurrentHatim] = useState(260);
-  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [isAdmin, setIsAdmin] = useState<boolean>(() => {
+    const storedAdmin = localStorage.getItem("isAdmin");
+    return storedAdmin === "true";
+  });
   const [cuzlers, setCuzlers] = useState<CuzlerType[]>([]);
   const [adminPassword, setAdminPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState(false);
@@ -15,10 +18,17 @@ const App: React.FC = () => {
   const handlePasswordSubmit = () => {
     if (adminPassword === "LONDRA") {
       setIsAdmin(true);
+      localStorage.setItem("isAdmin", "true");
     } else {
       alert("Yanlis sifre");
     }
   };
+
+  const handleLogout = () => {
+    setIsAdmin(false);
+    localStorage.removeItem("isAdmin");
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -78,7 +88,7 @@ const App: React.FC = () => {
                 filterByHatim={filterByHatim}
                 selectedHatim={selectedHatim}
                 setSelectedHatim={setSelectedHatim}
-                setIsAdmin={setIsAdmin}
+                setIsAdmin={handleLogout}
               />
             </>
           }
