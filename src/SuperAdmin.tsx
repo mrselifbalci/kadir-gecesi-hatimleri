@@ -278,7 +278,7 @@ const SuperAdmin = ({
               }}
             >
               <FormControl fullWidth sx={{ mb: 2 }}>
-                <FormLabel sx={{ color: "black" }}>Hatim Numaraları</FormLabel>
+                <FormLabel sx={{ color: "black" }}>Boş Olan Hatimler</FormLabel>
                 <FormGroup
                   sx={{
                     display: "grid",
