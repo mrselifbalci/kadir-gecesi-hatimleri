@@ -5,6 +5,7 @@ import HatimAl from "./HatimAl";
 import Header from "./components/Header";
 import { useEffect, useState } from "react";
 import Admin from "./Admin";
+import SuperAdmin from "./SuperAdmin";
 import { CuzlerType } from "./Cuzler";
 
 const App: React.FC = () => {
@@ -12,6 +13,10 @@ const App: React.FC = () => {
   const [isAdmin, setIsAdmin] = useState<boolean>(() => {
     const storedAdmin = localStorage.getItem("isAdmin");
     return storedAdmin === "true";
+  });
+  const [isSuperAdmin, setIsSuperAdmin] = useState<boolean>(() => {
+    const storedSuperAdmin = localStorage.getItem("isSuperAdmin");
+    return storedSuperAdmin === "true";
   });
   const [cuzlers, setCuzlers] = useState<CuzlerType[]>([]);
   const [filteredCuzlers, setFilteredCuzlers] = useState<CuzlerType[]>([]);
@@ -26,9 +31,23 @@ const App: React.FC = () => {
     }
   };
 
+  const handleSuperAdminPasswordSubmit = (password: string) => {
+    if (password === "LONDON2020%") {
+      setIsSuperAdmin(true);
+      localStorage.setItem("isSuperAdmin", "true");
+    } else {
+      alert("Yanlis sifre");
+    }
+  };
+
   const handleLogout = () => {
     setIsAdmin(false);
     localStorage.removeItem("isAdmin");
+  };
+
+  const handleSuperAdminLogout = () => {
+    setIsSuperAdmin(false);
+    localStorage.removeItem("isSuperAdmin");
   };
 
   useEffect(() => {
@@ -135,6 +154,19 @@ const App: React.FC = () => {
                 cuzlers={cuzlers}
                 setCuzlers={setCuzlers}
                 handlePasswordSubmit={handlePasswordSubmit}
+              />
+            </Layout>
+          }
+        />
+        <Route
+          path="/superadmin"
+          element={
+            <Layout>
+              <SuperAdmin
+                isSuperAdmin={isSuperAdmin}
+                cuzlers={cuzlers}
+                setCuzlers={setCuzlers}
+                handlePasswordSubmit={handleSuperAdminPasswordSubmit}
               />
             </Layout>
           }
