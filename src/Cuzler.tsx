@@ -223,7 +223,7 @@ const Cuzler = ({
     <Box sx={{ maxWidth: 800, margin: "0 auto", padding: 2 }}>
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
         <Typography variant="h4" component="h1" gutterBottom>
-          Kadir Gecesi Hatimleri
+          Hatim Listesi
         </Typography>
 
         <FormControl fullWidth>
