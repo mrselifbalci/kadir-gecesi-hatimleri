@@ -67,59 +67,73 @@ const Header = ({ cuzlers = [] }: HeaderProps) => {
     <Box
       sx={{
         display: "flex",
-        gap: 2,
-        justifyContent: "center",
-        alignItems: "center",
-        py: 2,
+        flexDirection: "column",
         borderBottom: "1px solid #e0e0e0",
         mb: 3,
-        position: "relative",
       }}
     >
-      <Button
-        component={Link}
-        to="/"
-        variant="text"
-        color={location.pathname === "/" ? "primary" : "inherit"}
-        sx={{ fontWeight: location.pathname === "/" ? "bold" : "normal" }}
-      >
-        Ana Sayfa
-      </Button>
-      <Button
-        component={Link}
-        to="/hatimal"
-        variant="text"
-        color={location.pathname === "/hatimal" ? "primary" : "inherit"}
+      <Box
         sx={{
-          fontWeight: location.pathname === "/hatimal" ? "bold" : "normal",
-        }}
-      >
-        Hatim Al
-      </Button>
-      <Button
-        component={Link}
-        to="/cuzal"
-        variant="text"
-        color={location.pathname === "/cuzal" ? "primary" : "inherit"}
-        sx={{ fontWeight: location.pathname === "/cuzal" ? "bold" : "normal" }}
-      >
-        Cüz Al
-      </Button>
-      <Button
-        onClick={() => setOpenSearch(true)}
-        sx={{
-          position: "absolute",
-          right: 16,
-          color: "white",
           display: "flex",
+          gap: 2,
+          justifyContent: "center",
           alignItems: "center",
-          gap: 1,
-          textTransform: "none",
+          py: 2,
         }}
-        startIcon={<SearchIcon />}
       >
-        İsmini Ara
-      </Button>
+        <Button
+          component={Link}
+          to="/"
+          variant="text"
+          color={location.pathname === "/" ? "primary" : "inherit"}
+          sx={{ fontWeight: location.pathname === "/" ? "bold" : "normal" }}
+        >
+          Ana Sayfa
+        </Button>
+        <Button
+          component={Link}
+          to="/hatimal"
+          variant="text"
+          color={location.pathname === "/hatimal" ? "primary" : "inherit"}
+          sx={{
+            fontWeight: location.pathname === "/hatimal" ? "bold" : "normal",
+          }}
+        >
+          Hatim Al
+        </Button>
+        <Button
+          component={Link}
+          to="/cuzal"
+          variant="text"
+          color={location.pathname === "/cuzal" ? "primary" : "inherit"}
+          sx={{
+            fontWeight: location.pathname === "/cuzal" ? "bold" : "normal",
+          }}
+        >
+          Cüz Al
+        </Button>
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          pb: 2,
+        }}
+      >
+        <Button
+          onClick={() => setOpenSearch(true)}
+          sx={{
+            color: "white",
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+            textTransform: "none",
+          }}
+          startIcon={<SearchIcon />}
+        >
+          İsmini Ara
+        </Button>
+      </Box>
 
       <Dialog
         open={openSearch}
