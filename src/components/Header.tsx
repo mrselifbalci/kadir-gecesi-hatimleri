@@ -72,52 +72,55 @@ const Header = ({ cuzlers = [] }: HeaderProps) => {
         mb: 3,
       }}
     >
-      <Box
-        sx={{
-          display: "flex",
-          gap: 2,
-          justifyContent: "center",
-          alignItems: "center",
-          py: 2,
-        }}
-      >
-        <Button
-          component={Link}
-          to="/"
-          variant="text"
-          color={location.pathname === "/" ? "primary" : "inherit"}
-          sx={{ fontWeight: location.pathname === "/" ? "bold" : "normal" }}
-        >
-          Ana Sayfa
-        </Button>
-        <Button
-          component={Link}
-          to="/hatimal"
-          variant="text"
-          color={location.pathname === "/hatimal" ? "primary" : "inherit"}
+      {location.pathname !== "/" && (
+        <Box
           sx={{
-            fontWeight: location.pathname === "/hatimal" ? "bold" : "normal",
+            display: "flex",
+            gap: 2,
+            justifyContent: "center",
+            alignItems: "center",
+            py: 2,
           }}
         >
-          Hatim Al
-        </Button>
-        <Button
-          component={Link}
-          to="/cuzal"
-          variant="text"
-          color={location.pathname === "/cuzal" ? "primary" : "inherit"}
-          sx={{
-            fontWeight: location.pathname === "/cuzal" ? "bold" : "normal",
-          }}
-        >
-          Cüz Al
-        </Button>
-      </Box>
+          <Button
+            component={Link}
+            to="/"
+            variant="text"
+            color={location.pathname === "/" ? "primary" : "inherit"}
+            sx={{ fontWeight: location.pathname === "/" ? "bold" : "normal" }}
+          >
+            Ana Sayfa
+          </Button>
+          <Button
+            component={Link}
+            to="/hatimal"
+            variant="text"
+            color={location.pathname === "/hatimal" ? "primary" : "inherit"}
+            sx={{
+              fontWeight: location.pathname === "/hatimal" ? "bold" : "normal",
+            }}
+          >
+            Hatim Al
+          </Button>
+          <Button
+            component={Link}
+            to="/cuzal"
+            variant="text"
+            color={location.pathname === "/cuzal" ? "primary" : "inherit"}
+            sx={{
+              fontWeight: location.pathname === "/cuzal" ? "bold" : "normal",
+            }}
+          >
+            Cüz Al
+          </Button>
+        </Box>
+      )}
       <Box
         sx={{
           display: "flex",
           justifyContent: "center",
           pb: 2,
+          pt: location.pathname === "/" ? 2 : 0,
         }}
       >
         <Button
