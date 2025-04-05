@@ -161,27 +161,29 @@ const Header = ({ cuzlers = [] }: HeaderProps) => {
           pt: location.pathname === "/" ? 2.5 : 0,
         }}
       >
-        <Button
-          onClick={() => setOpenSearch(true)}
-          variant="outlined"
-          sx={{
-            textTransform: "none",
-            borderRadius: "12px",
-            padding: "8px 20px",
-            boxShadow: "0 3px 15px rgba(21, 101, 192, 0.3)",
-            transition: "all 0.2s ease-in-out",
-            fontSize: "0.8rem",
-            color: "white",
-            "&:hover": {
-              transform: "translateY(-2px)",
-              boxShadow: "0 5px 20px rgba(21, 101, 192, 0.4)",
-              background: "linear-gradient(45deg, #1976d2 30%, #2196f3 90%)",
-            },
-          }}
-          startIcon={<SearchIcon sx={{ fontSize: "1rem" }} />}
-        >
-          Cüzünü Unuttuysan İsminle Ara
-        </Button>
+        {location.pathname === "/" && (
+          <Button
+            onClick={() => setOpenSearch(true)}
+            variant="outlined"
+            sx={{
+              textTransform: "none",
+              borderRadius: "12px",
+              padding: "8px 20px",
+              boxShadow: "0 3px 15px rgba(21, 101, 192, 0.3)",
+              transition: "all 0.2s ease-in-out",
+              fontSize: "0.8rem",
+              color: "white",
+              "&:hover": {
+                transform: "translateY(-2px)",
+                boxShadow: "0 5px 20px rgba(21, 101, 192, 0.4)",
+                background: "linear-gradient(45deg, #1976d2 30%, #2196f3 90%)",
+              },
+            }}
+            startIcon={<SearchIcon sx={{ fontSize: "1rem" }} />}
+          >
+            Cüzünü Unuttuysan İsminle Ara
+          </Button>
+        )}
       </Box>
 
       <Dialog
