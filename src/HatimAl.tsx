@@ -136,7 +136,7 @@ const HatimAl = () => {
   };
 
   return (
-    <Box sx={{ height: "100%", p: 3, width: "100%" }}>
+    <Box sx={{ height: "100%", p: 3 }}>
       <Box
         sx={{
           display: "flex",

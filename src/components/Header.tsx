@@ -111,9 +111,11 @@ const Header = ({ cuzlers = [] }: HeaderProps) => {
             component={Link}
             to="/hatimal"
             variant="text"
-            color={location.pathname === "/hatimal" ? "primary" : "inherit"}
             sx={{
-              color: "rgba(255, 255, 255, 0.9)",
+              color:
+                location.pathname === "/hatimal"
+                  ? "primary"
+                  : "rgba(255, 255, 255, 0.9)",
               textTransform: "none",
               fontWeight: location.pathname === "/hatimal" ? 600 : 400,
               fontSize: "1.1rem",
@@ -131,9 +133,11 @@ const Header = ({ cuzlers = [] }: HeaderProps) => {
             component={Link}
             to="/cuzal"
             variant="text"
-            color={location.pathname === "/cuzal" ? "primary" : "inherit"}
             sx={{
-              color: "rgba(255, 255, 255, 0.9)",
+              color:
+                location.pathname === "/cuzal"
+                  ? "primary"
+                  : "rgba(255, 255, 255, 0.9)",
               textTransform: "none",
               fontWeight: location.pathname === "/cuzal" ? 600 : 400,
               fontSize: "1.1rem",
@@ -159,15 +163,15 @@ const Header = ({ cuzlers = [] }: HeaderProps) => {
       >
         <Button
           onClick={() => setOpenSearch(true)}
-          variant="contained"
+          variant="outlined"
           sx={{
             textTransform: "none",
             borderRadius: "12px",
             padding: "8px 20px",
-            background: "linear-gradient(45deg, #1565c0 30%, #1976d2 90%)",
             boxShadow: "0 3px 15px rgba(21, 101, 192, 0.3)",
             transition: "all 0.2s ease-in-out",
             fontSize: "0.8rem",
+            color: "white",
             "&:hover": {
               transform: "translateY(-2px)",
               boxShadow: "0 5px 20px rgba(21, 101, 192, 0.4)",
