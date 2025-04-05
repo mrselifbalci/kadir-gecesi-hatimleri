@@ -156,25 +156,21 @@ const Header = ({ cuzlers = [] }: HeaderProps) => {
       >
         <Button
           onClick={() => setOpenSearch(true)}
+          variant="contained"
           sx={{
-            color: "white",
-            display: "flex",
-            alignItems: "center",
-            gap: 1.5,
-            textTransform: "none",
-            fontSize: "1.1rem",
-            padding: "12px 28px",
-            borderRadius: "30px",
+            borderRadius: "12px",
+            padding: "8px 20px",
             background: "linear-gradient(45deg, #1565c0 30%, #1976d2 90%)",
             boxShadow: "0 3px 15px rgba(21, 101, 192, 0.3)",
             transition: "all 0.2s ease-in-out",
+            fontSize: "0.7rem",
             "&:hover": {
               transform: "translateY(-2px)",
               boxShadow: "0 5px 20px rgba(21, 101, 192, 0.4)",
               background: "linear-gradient(45deg, #1976d2 30%, #2196f3 90%)",
             },
           }}
-          startIcon={<SearchIcon sx={{ fontSize: "1.3rem" }} />}
+          startIcon={<SearchIcon sx={{ fontSize: "1rem" }} />}
         >
           Cüzünü Unuttuysan İsminle Ara
         </Button>

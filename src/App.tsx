@@ -5,7 +5,7 @@ import {
   Link,
   useLocation,
 } from "react-router-dom";
-import { Box, Button, Container } from "@mui/material";
+import { Box, Button, Container, Typography } from "@mui/material";
 import Cuzler from "./Cuzler";
 import HatimAl from "./HatimAl";
 import Header from "./components/Header";
@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import Admin from "./Admin";
 import SuperAdmin from "./SuperAdmin";
 import { CuzlerType } from "./Cuzler";
+import femaleImage from "./assets/female.png";
 
 const AppContent = () => {
   const [currentHatim, setCurrentHatim] = useState(1);
@@ -154,42 +155,161 @@ const AppContent = () => {
                 alignItems: "center",
                 justifyContent: "center",
                 gap: 4,
+                position: "relative",
+                "&::before": {
+                  content: '""',
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  background: `url(${femaleImage}) no-repeat center center`,
+                  backgroundSize: "cover",
+                  zIndex: 0,
+                },
+                "&::after": {
+                  content: '""',
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  backgroundColor: "rgba(0, 0, 0, 0.60)",
+                  zIndex: 1,
+                },
               }}
             >
-              <Button
-                component={Link}
-                to="/hatimal"
-                variant="contained"
-                color="primary"
-                size="large"
+              <Box
                 sx={{
-                  fontSize: "1.2rem",
-                  padding: "12px 36px",
-                  minWidth: "200px",
-                  "&:hover": {
-                    color: "#2196f3", // Bright blue color on hover
-                  },
+                  position: "relative",
+                  zIndex: 2,
+                  textAlign: "center",
+                  mb: 4,
                 }}
               >
-                Hatim Al
-              </Button>
-              <Button
-                component={Link}
-                to="/cuzal"
-                variant="contained"
-                color="primary"
-                size="large"
+                <Typography
+                  variant="h3"
+                  sx={{
+                    fontWeight: 600,
+                    color: "rgba(255, 255, 255, 0.95)",
+                    mb: 2,
+                    textShadow: "0 2px 4px rgba(0,0,0,0.3)",
+                  }}
+                >
+                  Kurban Bayramı Hatimleri
+                </Typography>
+                <Typography
+                  variant="h6"
+                  sx={{
+                    color: "rgba(255, 255, 255, 0.8)",
+                    maxWidth: 600,
+                    mx: "auto",
+                    lineHeight: 1.6,
+                    mb: 3,
+                  }}
+                >
+                  "Kim Kur'an okur ve onu ezberlerse, helâli helâl, haramı da
+                  haram kabul ederse, Allah onu bu sebeple Cennete koyar."
+                </Typography>
+                <Typography
+                  sx={{
+                    color: "rgba(255, 255, 255, 0.7)",
+                    fontStyle: "italic",
+                    mb: 6,
+                  }}
+                >
+                  (Tirmizî, Fedâilü'l-Kur'ân, 13)
+                </Typography>
+              </Box>
+
+              <Box
                 sx={{
-                  fontSize: "1.2rem",
-                  padding: "12px 36px",
-                  minWidth: "200px",
-                  "&:hover": {
-                    color: "#2196f3", // Bright blue color on hover
-                  },
+                  position: "relative",
+                  zIndex: 2,
+                  display: "flex",
+                  flexDirection: { xs: "column", sm: "row" },
+                  gap: { xs: 2, sm: 4 },
+                  width: "100%",
+                  maxWidth: 600,
+                  justifyContent: "center",
                 }}
               >
-                Cüz Al
-              </Button>
+                <Button
+                  component={Link}
+                  to="/hatimal"
+                  variant="contained"
+                  size="large"
+                  sx={{
+                    fontSize: "1.2rem",
+                    padding: "16px 32px",
+                    minWidth: "240px",
+                    background:
+                      "linear-gradient(45deg, #1565c0 30%, #1976d2 90%)",
+                    boxShadow: "0 3px 15px rgba(21, 101, 192, 0.3)",
+                    borderRadius: "12px",
+                    transition: "all 0.3s ease",
+                    textTransform: "none",
+                    "&:hover": {
+                      transform: "translateY(-2px)",
+                      boxShadow: "0 6px 20px rgba(21, 101, 192, 0.4)",
+                      background:
+                        "linear-gradient(45deg, #1976d2 30%, #2196f3 90%)",
+                    },
+                  }}
+                >
+                  Tam Hatim Al
+                </Button>
+                <Button
+                  component={Link}
+                  to="/cuzal"
+                  variant="contained"
+                  size="large"
+                  sx={{
+                    fontSize: "1.2rem",
+                    padding: "16px 32px",
+                    minWidth: "240px",
+                    background:
+                      "linear-gradient(45deg, #1565c0 30%, #1976d2 90%)",
+                    boxShadow: "0 3px 15px rgba(21, 101, 192, 0.3)",
+                    borderRadius: "12px",
+                    transition: "all 0.3s ease",
+                    textTransform: "none",
+                    "&:hover": {
+                      transform: "translateY(-2px)",
+                      boxShadow: "0 6px 20px rgba(21, 101, 192, 0.4)",
+                      background:
+                        "linear-gradient(45deg, #1976d2 30%, #2196f3 90%)",
+                    },
+                  }}
+                >
+                  Cüz Al
+                </Button>
+              </Box>
+
+              <Box
+                sx={{
+                  position: "relative",
+                  zIndex: 2,
+                  mt: 6,
+                  textAlign: "center",
+                  maxWidth: 800,
+                  mx: "auto",
+                  px: 2,
+                }}
+              >
+                <Typography
+                  sx={{
+                    color: "rgba(255, 255, 255, 0.8)",
+                    fontSize: "1.1rem",
+                    lineHeight: 1.8,
+                  }}
+                >
+                  Kurban Bayramı'nda okunacak hatimlerimize katılarak bu mübarek
+                  bayramın feyzinden ve bereketinden istifade edebilirsiniz. Tam
+                  hatim almak için "Tam Hatim Al" butonuna, bir veya birden
+                  fazla cüz almak için "Cüz Al" butonuna tıklayabilirsiniz.
+                </Typography>
+              </Box>
             </Box>
             <Footer
               isAdmin={isAdmin}
