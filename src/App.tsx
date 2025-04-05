@@ -9,6 +9,7 @@ import { Box, Button, Container } from "@mui/material";
 import Cuzler from "./Cuzler";
 import HatimAl from "./HatimAl";
 import Header from "./components/Header";
+import Footer from "./components/Footer";
 import { useEffect, useState } from "react";
 import Admin from "./Admin";
 import SuperAdmin from "./SuperAdmin";
@@ -91,9 +92,17 @@ const AppContent = () => {
   };
 
   const Layout = ({ children }: { children: React.ReactNode }) => (
-    <Container>
+    <Container
+      sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
+    >
       <Header />
-      {children}
+      <Box sx={{ flex: 1 }}>{children}</Box>
+      <Footer
+        isAdmin={isAdmin}
+        isSuperAdmin={isSuperAdmin}
+        handleLogout={handleLogout}
+        handleSuperAdminLogout={handleSuperAdminLogout}
+      />
     </Container>
   );
 
@@ -102,45 +111,60 @@ const AppContent = () => {
       <Route
         path="/"
         element={
-          <Box
+          <Container
             sx={{
               display: "flex",
               flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              minHeight: "80vh",
-              gap: 4,
+              minHeight: "100vh",
             }}
           >
-            <Button
-              component={Link}
-              to="/hatimal"
-              variant="contained"
-              color="primary"
-              size="large"
+            <Header />
+            <Box
               sx={{
-                fontSize: "1.2rem",
-                padding: "12px 36px",
-                minWidth: "200px",
+                flex: 1,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 4,
               }}
             >
-              Hatim Al
-            </Button>
-            <Button
-              component={Link}
-              to="/cuzal"
-              variant="contained"
-              color="primary"
-              size="large"
-              sx={{
-                fontSize: "1.2rem",
-                padding: "12px 36px",
-                minWidth: "200px",
-              }}
-            >
-              Cüz Al
-            </Button>
-          </Box>
+              <Button
+                component={Link}
+                to="/hatimal"
+                variant="contained"
+                color="primary"
+                size="large"
+                sx={{
+                  fontSize: "1.2rem",
+                  padding: "12px 36px",
+                  minWidth: "200px",
+                }}
+              >
+                Hatim Al
+              </Button>
+              <Button
+                component={Link}
+                to="/cuzal"
+                variant="contained"
+                color="primary"
+                size="large"
+                sx={{
+                  fontSize: "1.2rem",
+                  padding: "12px 36px",
+                  minWidth: "200px",
+                }}
+              >
+                Cüz Al
+              </Button>
+            </Box>
+            <Footer
+              isAdmin={isAdmin}
+              isSuperAdmin={isSuperAdmin}
+              handleLogout={handleLogout}
+              handleSuperAdminLogout={handleSuperAdminLogout}
+            />
+          </Container>
         }
       />
       <Route
