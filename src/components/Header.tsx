@@ -131,7 +131,7 @@ const Header = ({ cuzlers = [] }: HeaderProps) => {
           }}
           startIcon={<SearchIcon />}
         >
-          İsmini Ara
+          Cüzünü Unuttuysan İsminle Ara
         </Button>
       </Box>
 
