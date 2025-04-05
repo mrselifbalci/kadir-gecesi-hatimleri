@@ -259,6 +259,7 @@ const AppContent = () => {
                         boxShadow: "0 6px 20px rgba(21, 101, 192, 0.4)",
                         background:
                           "linear-gradient(45deg, #1976d2 30%, #2196f3 90%)",
+                        color: "#90caf9",
                       },
                     }}
                   >
@@ -284,6 +285,7 @@ const AppContent = () => {
                         boxShadow: "0 6px 20px rgba(21, 101, 192, 0.4)",
                         background:
                           "linear-gradient(45deg, #1976d2 30%, #2196f3 90%)",
+                        color: "#90caf9",
                       },
                     }}
                   >
