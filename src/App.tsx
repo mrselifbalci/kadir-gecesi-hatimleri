@@ -72,7 +72,34 @@ const AppContent = () => {
       );
       console.log(sortedData);
       setCuzlers(sortedData);
-      filterByHatim(currentHatim, sortedData);
+
+      // Find the first hatim with a blank personName
+      const hatimNumbers = [
+        ...new Set(sortedData.map((item: CuzlerType) => item.hatimNumber)),
+      ] as number[];
+      hatimNumbers.sort((a, b) => a - b);
+      let firstHatimWithBlank = 1;
+
+      for (const hatimNumber of hatimNumbers) {
+        const hatimCuzlers = sortedData.filter(
+          (item: CuzlerType) => item.hatimNumber === hatimNumber
+        );
+        if (
+          hatimCuzlers.some(
+            (cuz: CuzlerType) => !cuz.personName || cuz.personName.trim() === ""
+          )
+        ) {
+          firstHatimWithBlank = hatimNumber;
+          break;
+        }
+      }
+
+      // Set the selected hatim and filtered cuzlers directly
+      setSelectedHatim(firstHatimWithBlank);
+      const filtered = sortedData
+        .filter((item: CuzlerType) => item.hatimNumber === firstHatimWithBlank)
+        .sort((a: CuzlerType, b: CuzlerType) => a.cuzNumber - b.cuzNumber);
+      setFilteredCuzlers(filtered);
     } catch (error: unknown) {
       console.error("Error fetching data:", error);
     }
