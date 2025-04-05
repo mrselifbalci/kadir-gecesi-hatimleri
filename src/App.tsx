@@ -122,7 +122,7 @@ const AppContent = () => {
     <Container
       sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
     >
-      <Header />
+      <Header cuzlers={cuzlers} />
       <Box sx={{ flex: 1 }}>{children}</Box>
       <Footer
         isAdmin={isAdmin}
@@ -145,6 +145,7 @@ const AppContent = () => {
               minHeight: "100vh",
             }}
           >
+            <Header cuzlers={cuzlers} />
             <Box
               sx={{
                 flex: 1,
