@@ -31,10 +31,6 @@ const Footer: React.FC<FooterProps> = ({
         fontSize: "0.8rem",
       }}
     >
-      <Typography variant="caption" color="text.secondary">
-        © {new Date().getFullYear()} Kurban Bayrami Hatimleri
-      </Typography>
-
       {!isAdmin && (
         <Button
           component={Link}
