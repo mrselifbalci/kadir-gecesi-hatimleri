@@ -272,8 +272,8 @@ const SuperAdmin = ({
           </Box>
           <Box sx={{ border: "solid 2px grey", borderRadius: "8px", p: 3 }}>
             <Typography variant="h5" sx={{ color: "black", mb: 1 }}>
-              Full hatim olarak eklemek istediginiz hatim numaralarini ve
-              okuyacak ismi yazip 'Ekle' butonuna tiklayiniz.
+              Full hatim olarak eklemek istediginiz hatim numaralarini secin ve
+              okuyacak ismi yazip 'Ekle' butonuna tiklayin.
             </Typography>
             <Box
               sx={{
