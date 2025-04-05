@@ -103,13 +103,26 @@ const AppContent = () => {
         path="/"
         element={
           <Box
-            sx={{ display: "flex", gap: 2, justifyContent: "center", my: 4 }}
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              minHeight: "80vh",
+              gap: 4,
+            }}
           >
             <Button
               component={Link}
               to="/hatimal"
               variant="contained"
               color="primary"
+              size="large"
+              sx={{
+                fontSize: "1.2rem",
+                padding: "12px 36px",
+                minWidth: "200px",
+              }}
             >
               Hatim Al
             </Button>
@@ -118,6 +131,12 @@ const AppContent = () => {
               to="/cuzal"
               variant="contained"
               color="primary"
+              size="large"
+              sx={{
+                fontSize: "1.2rem",
+                padding: "12px 36px",
+                minWidth: "200px",
+              }}
             >
               Cüz Al
             </Button>
