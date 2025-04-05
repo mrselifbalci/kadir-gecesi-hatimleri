@@ -155,7 +155,7 @@ const HatimAl = () => {
           value={hatimCount}
           onChange={(e) => setHatimCount(e.target.value)}
           sx={{
-            width: "50%",
+            width: "100%",
             mb: 2,
             "& .MuiOutlinedInput-root": {
               "& fieldset": {
@@ -184,7 +184,7 @@ const HatimAl = () => {
           value={fullHatimName}
           onChange={(e) => setFullHatimName(e.target.value)}
           sx={{
-            width: "50%",
+            width: "100%",
             mb: 2,
             "& .MuiOutlinedInput-root": {
               "& fieldset": {
