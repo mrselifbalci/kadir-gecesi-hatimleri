@@ -220,9 +220,44 @@ const Cuzler = ({
   }, []);
 
   return (
-    <Box sx={{ maxWidth: 800, margin: "0 auto", padding: 2 }}>
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
+    <Box
+      sx={{
+        maxWidth: 800,
+        margin: "0 auto",
+        padding: 2,
+        minHeight: "100vh",
+        background: "linear-gradient(135deg, #121212 0%, #1a237e 100%)",
+      }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 2,
+          position: "relative",
+          "&::before": {
+            content: '""',
+            position: "absolute",
+            top: -20,
+            left: "50%",
+            transform: "translateX(-50%)",
+            width: 80,
+            height: 80,
+          },
+        }}
+      >
+        <Typography
+          variant="h4"
+          component="h1"
+          gutterBottom
+          sx={{
+            color: "#f5f5f5",
+            textAlign: "center",
+            fontWeight: 700,
+            textShadow: "0 2px 4px rgba(0,0,0,0.3)",
+            mt: 2,
+          }}
+        >
           Hatim Listesi
         </Typography>
 
@@ -235,35 +270,40 @@ const Cuzler = ({
             disabled={!isAdmin && !arePreviousHatimsComplete(selectedHatim)}
             sx={{
               color: "white",
-              backgroundColor: "#333",
+              backgroundColor: "rgba(255, 255, 255, 0.05)",
+              borderRadius: "12px",
               "& .MuiOutlinedInput-notchedOutline": {
-                borderColor: "white",
+                borderColor: "rgba(255, 255, 255, 0.3)",
               },
               "&:hover .MuiOutlinedInput-notchedOutline": {
-                borderColor: "white",
+                borderColor: "rgba(255, 255, 255, 0.5)",
+              },
+              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                borderColor: "#90caf9",
               },
               "& .MuiSelect-icon": {
                 color: "white",
               },
               "& .MuiMenu-root": {
-                backgroundColor: "grey",
+                backgroundColor: "rgba(18, 18, 18, 0.95)",
               },
               "& .MuiMenu-paper": {
-                backgroundColor: "grey",
-                color: "white",
+                backgroundColor: "rgba(18, 18, 18, 0.95)",
+                backdropFilter: "blur(10px)",
+                border: "1px solid rgba(255, 255, 255, 0.1)",
+                borderRadius: "12px",
               },
               "& .MuiMenuItem-root": {
                 color: "white",
                 "&:hover": {
-                  backgroundColor: "#333",
-                  color: "#666",
+                  backgroundColor: "rgba(255, 255, 255, 0.1)",
                 },
                 "&.Mui-disabled": {
-                  color: "#666",
+                  color: "rgba(255, 255, 255, 0.3)",
                 },
                 "&.Mui-selected": {
-                  backgroundColor: "primary.main",
-                  color: "white",
+                  backgroundColor: "rgba(25, 118, 210, 0.2)",
+                  color: "#90caf9",
                 },
               },
             }}
@@ -290,19 +330,33 @@ const Cuzler = ({
                 display: "flex",
                 alignItems: "center",
                 gap: 1,
-                background: "#cccccc",
-                padding: 1,
-                borderRadius: 1,
-                color: "grey",
+                background: "rgba(255, 255, 255, 0.05)",
+                padding: 2,
+                borderRadius: "12px",
+                border: "1px solid rgba(255, 255, 255, 0.1)",
+                transition: "all 0.3s ease",
+                "&:hover": {
+                  background: "rgba(255, 255, 255, 0.08)",
+                  transform: "translateY(-2px)",
+                  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
+                },
               }}
             >
-              <span>Cüz {item.cuzNumber}:</span>
+              <Typography
+                sx={{
+                  color: "white",
+                  fontWeight: 500,
+                  minWidth: "100px",
+                }}
+              >
+                Cüz {item.cuzNumber}:
+              </Typography>
 
               {editedFields[item.cuzNumber] || !item.personName ? (
                 <>
                   <TextField
                     size="small"
-                    placeholder="Isminizi yaziniz"
+                    placeholder="İsminizi yazınız"
                     value={nameInputs[item.cuzNumber] ?? item.personName}
                     onChange={(e) =>
                       handleInputChange(item.cuzNumber, e.target.value)
@@ -312,9 +366,24 @@ const Cuzler = ({
                       !isAdmin
                     }
                     sx={{
-                      background: "white",
-                      border: "1px solid #ccc",
-                      width: "170px",
+                      flex: 1,
+                      "& .MuiOutlinedInput-root": {
+                        color: "white",
+                        backgroundColor: "rgba(255, 255, 255, 0.05)",
+                        borderRadius: "8px",
+                        "& fieldset": {
+                          borderColor: "rgba(255, 255, 255, 0.3)",
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "rgba(255, 255, 255, 0.5)",
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "#90caf9",
+                        },
+                      },
+                      "& .MuiInputBase-input::placeholder": {
+                        color: "rgba(255, 255, 255, 0.5)",
+                      },
                     }}
                   />
 
@@ -327,27 +396,32 @@ const Cuzler = ({
                       !isAdmin
                     }
                     sx={{
-                      backgroundColor:
+                      minWidth: "100px",
+                      background:
                         !isPreviousCuzsFilled(
                           item.hatimNumber,
                           item.cuzNumber
                         ) && !isAdmin
-                          ? "#ccc"
-                          : "primary",
-                      color:
-                        !isPreviousCuzsFilled(
-                          item.hatimNumber,
-                          item.cuzNumber
-                        ) && !isAdmin
-                          ? "#666"
-                          : "white",
-                      cursor:
-                        !isPreviousCuzsFilled(
-                          item.hatimNumber,
-                          item.cuzNumber
-                        ) && !isAdmin
-                          ? "not-allowed"
-                          : "pointer",
+                          ? "rgba(255, 255, 255, 0.1)"
+                          : "linear-gradient(45deg, #1565c0 30%, #1976d2 90%)",
+                      color: "white",
+                      borderRadius: "8px",
+                      textTransform: "none",
+                      transition: "all 0.3s ease",
+                      "&:hover": {
+                        background:
+                          !isPreviousCuzsFilled(
+                            item.hatimNumber,
+                            item.cuzNumber
+                          ) && !isAdmin
+                            ? "rgba(255, 255, 255, 0.1)"
+                            : "linear-gradient(45deg, #1976d2 30%, #2196f3 90%)",
+                        transform: "translateY(-1px)",
+                      },
+                      "&.Mui-disabled": {
+                        background: "rgba(255, 255, 255, 0.1)",
+                        color: "rgba(255, 255, 255, 0.3)",
+                      },
                     }}
                   >
                     {updatedCuz[item.cuzNumber]
@@ -358,10 +432,16 @@ const Cuzler = ({
                   </Button>
                 </>
               ) : (
-                <span
-                  style={{
+                <Typography
+                  sx={{
+                    flex: 1,
+                    color: "white",
                     cursor: isAdmin ? "pointer" : "default",
-                    fontWeight: isAdmin ? "bold" : "normal",
+                    fontWeight: isAdmin ? 600 : 400,
+                    transition: "all 0.3s ease",
+                    "&:hover": {
+                      color: isAdmin ? "#90caf9" : "white",
+                    },
                   }}
                   onClick={() =>
                     isAdmin &&
@@ -372,20 +452,56 @@ const Cuzler = ({
                   }
                 >
                   {item.personName || "—"}
-                </span>
+                </Typography>
               )}
             </Box>
           ))}
         </Box>
       </Box>
 
-      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-        <DialogTitle>Uyarı</DialogTitle>
-        <DialogContent>
-          <Typography>{dialogMessage}</Typography>
+      <Dialog
+        open={openDialog}
+        onClose={() => setOpenDialog(false)}
+        PaperProps={{
+          sx: {
+            backgroundColor: "#1a237e",
+            color: "white",
+            borderRadius: "16px",
+            boxShadow: "0 8px 32px rgba(0, 0, 0, 0.5)",
+          },
+        }}
+      >
+        <DialogTitle
+          sx={{
+            textAlign: "center",
+            fontSize: "1.5rem",
+            fontWeight: 600,
+            background: "linear-gradient(45deg, #1565c0 30%, #1976d2 90%)",
+            color: "white",
+          }}
+        >
+          Uyarı
+        </DialogTitle>
+        <DialogContent sx={{ p: 3 }}>
+          <Typography sx={{ fontSize: "1.1rem", textAlign: "center" }}>
+            {dialogMessage}
+          </Typography>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenDialog(false)}>Tamam</Button>
+        <DialogActions sx={{ p: 2, justifyContent: "center" }}>
+          <Button
+            onClick={() => setOpenDialog(false)}
+            variant="contained"
+            sx={{
+              background: "linear-gradient(45deg, #1565c0 30%, #1976d2 90%)",
+              borderRadius: "8px",
+              textTransform: "none",
+              "&:hover": {
+                background: "linear-gradient(45deg, #1976d2 30%, #2196f3 90%)",
+              },
+            }}
+          >
+            Tamam
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>
