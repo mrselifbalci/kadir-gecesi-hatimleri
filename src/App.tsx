@@ -145,6 +145,7 @@ const AppContent = () => {
               flexDirection: "column",
               minHeight: "100vh",
               position: "relative",
+              backgroundColor: "#121212",
               "&::before": {
                 content: '""',
                 position: "fixed",
@@ -387,9 +388,11 @@ const AppContent = () => {
 
 const App: React.FC = () => {
   return (
-    <Router>
-      <AppContent />
-    </Router>
+    <Box sx={{ backgroundColor: "#121212", minHeight: "100vh" }}>
+      <Router>
+        <AppContent />
+      </Router>
+    </Box>
   );
 };
 

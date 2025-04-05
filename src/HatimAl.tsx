@@ -145,7 +145,13 @@ const HatimAl = () => {
           p: 1,
         }}
       >
-        <Typography variant="h6" sx={{ mb: 2 }}>
+        <Typography
+          sx={{
+            color: "white",
+            mb: 3,
+            textAlign: "center",
+          }}
+        >
           Almak istediginiz hatim sayisini ve isminizi yazarak ekleye basiniz
         </Typography>
         <TextField
