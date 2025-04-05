@@ -183,7 +183,7 @@ const Admin = ({
     setLocalPassword("");
   };
   return (
-    <Box sx={{ background: "white", height: "100%", p: 3 }}>
+    <Box sx={{ height: "100%", p: 3 }}>
       {isAdmin ? (
         <Box>
           <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
@@ -194,7 +194,7 @@ const Admin = ({
           <Box
             sx={{ border: "solid 2px grey", borderRadius: "8px", p: 3, mb: 3 }}
           >
-            <Typography variant="h5" sx={{ color: "black", mb: 1 }}>
+            <Typography variant="h5" sx={{ color: "white", mb: 1 }}>
               Kaç yeni boş hatim eklemek istiyorsunuz?
             </Typography>
             <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -208,6 +208,26 @@ const Admin = ({
                     e.target.value === "" ? undefined : Number(e.target.value)
                   )
                 }
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: "white",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "white",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "white",
+                    },
+                    "& input": {
+                      color: "white",
+                    },
+                  },
+                  "& .MuiInputBase-input::placeholder": {
+                    color: "white",
+                    opacity: 0.7,
+                  },
+                }}
               />
               <Button
                 variant="contained"
@@ -226,7 +246,7 @@ const Admin = ({
             </Box>
           </Box>
           <Box sx={{ border: "solid 2px grey", borderRadius: "8px", p: 3 }}>
-            <Typography variant="h5" sx={{ color: "black", mb: 1 }}>
+            <Typography variant="h5" sx={{ color: "white", mb: 1 }}>
               Full hatim olarak eklemek istediginiz hatim numaralarini ve
               okuyacak ismi yazip 'Ekle' butonuna tiklayiniz.
             </Typography>
@@ -246,7 +266,7 @@ const Admin = ({
                     return hatimCuzlers.every((c) => !c.personName);
                   }).length > 0 ? (
                   <>
-                    <FormLabel sx={{ color: "black" }}>
+                    <FormLabel sx={{ color: "white" }}>
                       Boş Olan Hatimler
                     </FormLabel>
                     <FormGroup
@@ -279,10 +299,16 @@ const Admin = ({
                                     );
                                   }
                                 }}
+                                sx={{
+                                  color: "white",
+                                  "&.Mui-checked": {
+                                    color: "#1976d2",
+                                  },
+                                }}
                               />
                             }
                             label={`Hatim ${num}`}
-                            sx={{ color: "black" }}
+                            sx={{ color: "white" }}
                           />
                         ))}
                     </FormGroup>
@@ -325,7 +351,27 @@ const Admin = ({
                       return hatimCuzlers.every((c) => !c.personName);
                     }).length === 0
                 }
-                sx={{ mb: 2 }}
+                sx={{
+                  mb: 2,
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: "white",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "white",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "white",
+                    },
+                    "& textarea": {
+                      color: "white",
+                    },
+                  },
+                  "& .MuiInputBase-input::placeholder": {
+                    color: "white",
+                    opacity: 0.7,
+                  },
+                }}
               />
               <Button
                 variant="contained"
@@ -370,7 +416,6 @@ const Admin = ({
         <Box
           sx={{
             marginTop: 3,
-            background: "#EF9A9A",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -388,10 +433,33 @@ const Admin = ({
               value={localPassword}
               onChange={(e) => setLocalPassword(e.target.value)}
               autoComplete="new-password"
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: "white",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "white",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "white",
+                  },
+                  "& input": {
+                    color: "white",
+                  },
+                },
+                "& .MuiInputBase-input::placeholder": {
+                  color: "white",
+                  opacity: 0.7,
+                },
+              }}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
-                    <IconButton onClick={() => setShowPassword(!showPassword)}>
+                    <IconButton
+                      onClick={() => setShowPassword(!showPassword)}
+                      sx={{ color: "white" }}
+                    >
                       {showPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   </InputAdornment>
