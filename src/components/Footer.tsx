@@ -32,7 +32,7 @@ const Footer: React.FC<FooterProps> = ({
       }}
     >
       <Typography variant="caption" color="text.secondary">
-        © {new Date().getFullYear()} Kadir Gecesi Hatimleri
+        © {new Date().getFullYear()} Kurban Bayrami Hatimleri
       </Typography>
 
       {!isAdmin && (
@@ -56,7 +56,8 @@ const Footer: React.FC<FooterProps> = ({
 
       {isAdmin && (
         <Button
-          onClick={handleLogout}
+          component={Link}
+          to="/admin"
           size="small"
           color="primary"
           variant="outlined"
@@ -67,7 +68,7 @@ const Footer: React.FC<FooterProps> = ({
             minHeight: "24px",
           }}
         >
-          Çıkış Yap
+          Admin Paneline Git
         </Button>
       )}
     </Box>

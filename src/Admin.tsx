@@ -29,6 +29,7 @@ interface AdminProps {
   cuzlers: CuzlerType[];
   setCuzlers: React.Dispatch<React.SetStateAction<CuzlerType[]>>;
   handlePasswordSubmit: (password: string) => void;
+  handleLogout: () => void;
 }
 
 const Admin = ({
@@ -36,6 +37,7 @@ const Admin = ({
   cuzlers,
   setCuzlers,
   handlePasswordSubmit,
+  handleLogout,
 }: AdminProps) => {
   const [localPassword, setLocalPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -190,6 +192,14 @@ const Admin = ({
             <Typography variant="h4" component="h1">
               Admin Paneli
             </Typography>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleLogout}
+              sx={{ ml: 2 }}
+            >
+              Çıkış Yap
+            </Button>
           </Box>
           <Box
             sx={{ border: "solid 2px grey", borderRadius: "8px", p: 3, mb: 3 }}

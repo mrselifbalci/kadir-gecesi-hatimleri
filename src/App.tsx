@@ -208,6 +208,7 @@ const AppContent = () => {
               cuzlers={cuzlers}
               setCuzlers={setCuzlers}
               handlePasswordSubmit={handlePasswordSubmit}
+              handleLogout={handleLogout}
             />
           </Layout>
         }
