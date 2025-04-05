@@ -180,7 +180,7 @@ const HatimAl = () => {
           minRows={4}
           size="small"
           type="text"
-          placeholder="Okuyacak isim"
+          placeholder="İsminiz"
           value={fullHatimName}
           onChange={(e) => setFullHatimName(e.target.value)}
           sx={{

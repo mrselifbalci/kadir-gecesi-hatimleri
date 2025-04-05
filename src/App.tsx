@@ -118,7 +118,6 @@ const AppContent = () => {
               minHeight: "100vh",
             }}
           >
-            <Header />
             <Box
               sx={{
                 flex: 1,
@@ -139,6 +138,9 @@ const AppContent = () => {
                   fontSize: "1.2rem",
                   padding: "12px 36px",
                   minWidth: "200px",
+                  "&:hover": {
+                    color: "#2196f3", // Bright blue color on hover
+                  },
                 }}
               >
                 Hatim Al
@@ -153,6 +155,9 @@ const AppContent = () => {
                   fontSize: "1.2rem",
                   padding: "12px 36px",
                   minWidth: "200px",
+                  "&:hover": {
+                    color: "#2196f3", // Bright blue color on hover
+                  },
                 }}
               >
                 Cüz Al
