@@ -13,6 +13,10 @@ import {
   FormGroup,
   FormControlLabel,
   Checkbox,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import { CuzlerType } from "./Cuzler";
 import {
@@ -47,6 +51,10 @@ const Admin = ({
   const [eklendiConfirm, setEklendiConfirm] = useState(false);
   const [eklendiConfirm2, setEklendiConfirm2] = useState(false);
   const [selectedHatims, setSelectedHatims] = useState<number[]>([]);
+  const [hatimNumbersToDelete, setHatimNumbersToDelete] = useState<string>("");
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+  const [numbersToDelete, setNumbersToDelete] = useState<number[]>([]);
+
   const handleDownloadExcel = () => {
     const formattedData = cuzlers
       .sort((a, b) => a.hatimNumber - b.hatimNumber) // Sorting by hatimNumber in ascending order
@@ -184,6 +192,37 @@ const Admin = ({
     handlePasswordSubmit(localPassword);
     setLocalPassword("");
   };
+
+  const handleDeleteClick = () => {
+    const numbers = hatimNumbersToDelete
+      .split(",")
+      .map((num) => parseInt(num.trim()))
+      .filter((num) => !isNaN(num));
+
+    if (numbers.length === 0) {
+      alert("Lütfen geçerli hatim numaralarını giriniz");
+      return;
+    }
+
+    setNumbersToDelete(numbers);
+    setOpenConfirmDialog(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    try {
+      await deleteData(numbersToDelete);
+      setCuzlers((prevCuzlers) =>
+        prevCuzlers.filter((cuz) => !numbersToDelete.includes(cuz.hatimNumber))
+      );
+      setHatimNumbersToDelete("");
+      setOpenConfirmDialog(false);
+      alert("Hatimler başarıyla silindi");
+      localStorage.setItem("forceRefresh", "true");
+    } catch (error) {
+      alert("Hatim silme işlemi başarısız oldu");
+    }
+  };
+
   return (
     <Box sx={{ height: "100%", p: 3 }}>
       {isAdmin ? (
@@ -421,6 +460,81 @@ const Admin = ({
               Download Excel
             </Button>
           </Box>
+          <Box
+            sx={{ border: "solid 2px grey", borderRadius: "8px", p: 3, mt: 3 }}
+          >
+            <Typography variant="h5" sx={{ color: "white", mb: 1 }}>
+              Hatim Silme
+            </Typography>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              <Typography variant="body2" sx={{ color: "gray" }}>
+                Silmek istediğiniz hatim numaralarını virgülle ayırarak giriniz
+                (örn: 1,2,3)
+              </Typography>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <TextField
+                  size="small"
+                  fullWidth
+                  placeholder="Örn: 1,2,3"
+                  value={hatimNumbersToDelete}
+                  onChange={(e) => setHatimNumbersToDelete(e.target.value)}
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      "& fieldset": {
+                        borderColor: "white",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "white",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "white",
+                      },
+                      "& input": {
+                        color: "white",
+                      },
+                    },
+                    "& .MuiInputBase-input::placeholder": {
+                      color: "white",
+                      opacity: 0.7,
+                    },
+                  }}
+                />
+                <Button
+                  variant="contained"
+                  color="error"
+                  size="small"
+                  onClick={handleDeleteClick}
+                >
+                  Sil
+                </Button>
+              </Box>
+            </Box>
+          </Box>
+
+          <Dialog
+            open={openConfirmDialog}
+            onClose={() => setOpenConfirmDialog(false)}
+          >
+            <DialogTitle>Silme İşlemini Onayla</DialogTitle>
+            <DialogContent>
+              <Typography>
+                {numbersToDelete.length > 0 &&
+                  `${numbersToDelete.join(
+                    ", "
+                  )} numaralı hatimleri silmek istediğinizden emin misiniz?`}
+              </Typography>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setOpenConfirmDialog(false)}>İptal</Button>
+              <Button
+                onClick={handleConfirmDelete}
+                color="error"
+                variant="contained"
+              >
+                Sil
+              </Button>
+            </DialogActions>
+          </Dialog>
         </Box>
       ) : (
         <Box
